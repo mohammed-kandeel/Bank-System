@@ -14,7 +14,10 @@
 class System{
 private:
 
-	            
+
+
+
+
 
 
 
@@ -25,7 +28,6 @@ private:
 
 
 public:
-
 	void run() {
 		system("CLS");
 
