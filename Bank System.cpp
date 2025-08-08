@@ -11,10 +11,9 @@ using namespace std;
 #include "Client.h"
 
 
-
 int main(){
-	System s;
-	s.run();
+	//System s;
+	System ::run();
 
 
 
