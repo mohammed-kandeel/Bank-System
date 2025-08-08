@@ -14,6 +14,13 @@
 class System{
 private:
 
+	            
+
+
+
+
+
+
 
 
 
@@ -185,7 +192,7 @@ public:
 				case '4':transfer(c); break;
 				case '5':run(); break;
 				case '6':return; break;
-				defaul cout << "Wrong input\n"; count++; break;
+				default: { cout << "Wrong input\n"; count++; } break;
 			}
 
 			if (count == 3)	run();
@@ -194,11 +201,6 @@ public:
 	}
 
 
-
-
-
-
-	//////
 	//Employee_menu
 	//void  employee_menu(Employee& e) {
 
