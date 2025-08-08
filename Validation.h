@@ -10,6 +10,7 @@ class Validation{
 public:
 	 //screan
 	static void welcom_screan() {
+		system("CLS");
 		system("color 0b");
 
 
@@ -33,7 +34,7 @@ public:
 
 	}
 	static void EX_screan() {
-
+		system("CLS");
 		//	"Thank you for using the banking system.
 		//See you soon."
 

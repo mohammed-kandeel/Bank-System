@@ -20,7 +20,8 @@ private:
 public:
 
 	void run() {
-		
+		system("CLS");
+
 		do{
 
 			Validation::welcom_screan();
@@ -47,6 +48,12 @@ public:
 	//login
 	void  login_as_client() {
 
+
+
+
+		//test
+		Client c(111, "mmm", "123", 1500, "EG"), c2(222, "aaa", "1234", 100, "EG");
+		client_menu(c);
 	}
 	//void  login_as_employee() {
 
@@ -60,17 +67,15 @@ public:
 	
 		//don--------
 	bool anothe_obration() {
+		system("cls");
 		int count{};
 		do {
-			system("cls");
-			cout << "Do you want to make another transaction\n";
-			cout << " 1. Yes\n";
-			cout << " 2. No\n";
-			string choice;
+			cout << "Do you want to make another transaction (y/n)?\n";
+			char choice;
 			cin >> choice;
 
-			if (choice == "1" || choice == "yes" || choice == "YES") return true;
-			else if (choice == "2" || choice == "no" || choice == "NO") return false;
+			if (choice == 'y' || choice == 'Y') return true;
+			else if (choice == 'n' || choice == 'N') return false;
 			else {
 				cout << "Wrong input\n";
 				count++;
@@ -79,59 +84,108 @@ public:
 
 		} while (true);
 	}
-		
-		//don--------
 	void deposit(Client& c) {
-		double amount;
-		cout << "====   Deposit   ====\n\n";
-		cout << "Enter amount: ";
-		cin >> amount;
+		system("CLS");
+		
 
-		c.deposit(amount);
-		cout << "Deposit successful. " << amount << " has been added to your account." << endl;
+
+
+		int amount;
+		cout << "====   Deposit   ====\n\n";
+		cout << "(Note: You can deposit in multiples of 100 only, up to a maximum of 12000)\n";
+		cout << "\nEnter amount (or press '1' to return): ";
+		cin >> amount;
+		
+		if (amount == 1) {
+			client_menu(c);
+		}
+		else if (amount <= 0) {
+			cout << "\nInvalid amount.\n";
+		}
+		else if (amount > 12000) {
+			cout << "\nInvalid amount.\n";
+		}
+		else if (amount % 100 != 0) {
+			cout << "\nAmount must be 100 or a multiple of 100.\n";
+		}
+		else{
+			c.deposit(amount);
+			cout << "\nDeposit successful. " << amount << " has been added to your account." << endl;
+		}
 		this_thread::sleep_for(chrono::seconds(3));
 		anothe_obration() ? client_menu(c) : run();
 	}
-		//-----------
+	void withdraw(Client& c) {
+		system("CLS");
+		int amount;
 
-	void withdraw(Client& c){
-		double amount;
-		cout << "Enter amount: ";
+		cout << "====   Withdraw   ====\n\n";
+		cout << "(Note: You can withdraw in multiples of 100 only, up to a maximum of 12000)\n";
+		cout << "\nEnter amount (or press '1' to return): ";
 		cin >> amount;
 
-		if (c.checkAvailableBalance(amount)) {
+		if (amount == 1) {
+			client_menu(c);
+		}
+		else if (amount <= 0) {
+			cout << "\nInvalid amount.\n";
+		}
+		else if (amount > 12000) {
+			cout << "\nInvalid amount.\n";
+		}
+		else if (amount % 100 != 0) {
+			cout << "\nAmount must be 100 or a multiple of 100.\n";
+		}
+		else if (c.checkAvailableBalance(amount)) {
 			c.withDraw(amount);
-			cout << "Withdrawal successful. " << amount << " has been withdrawn from your account." << endl;
+			cout << "\nWithdrawal successful. " << amount << " has been withdrawn from your account." << endl;
 		}
 		else
-			cout << "Transaction failed: Insufficient balance.\n";
+			cout << "\nTransaction failed: Insufficient balance.\n";
+		this_thread::sleep_for(chrono::seconds(3));
+		anothe_obration() ? client_menu(c) : run();
+
 	}
-	void balance(Client& c) {}
+	void balance(Client& c) {
+		system("CLS");
+		cout << "====   Balance   ====\n\n";
+		c.checkBalance();
+		cout << endl;
+		system("pause");
+		anothe_obration() ? client_menu(c) : run();
+
+	}
+
+		//-----------
+	
+
 	void transfer(Client& c) {}
 
 
 	void  client_menu(Client& c) {
+		system("cls");
 		int count{};
 		do{
-
-			cout << "\nClient Menu:\n1";
+			cout << "\nClient Menu:\n";
 			cout << "1. Deposit\n";
 			cout << "2. Withdraw\n";
 			cout << "3. Balance\n";
 			cout << "4. Transfer\n";
 			cout << "5. Login menu\n";
 			cout << "6. Exit\n";
-			
-			string choice;
+			cout << "\nChoice (1-6): ";
+
+			char choice;
 			cin >> choice;
 
-			if (choice == "1" || choice == "deposit") deposit(c);
-			else if (choice == "2" || choice == "withdraw") withdraw(c);
-			else if (choice == "3" || choice == "balance") balance(c);
-			else if (choice == "4" || choice == "transfer") transfer(c);
-			else {
-				cout << "Wrong input\n";
-				count++;
+			switch (choice) {
+				case '1':deposit(c); break;
+				case '2':withdraw(c); break;
+				case '3':balance(c); break;
+				case '4':transfer(c); break;
+				case '5':run(); break;
+				case '6':return; break;
+				defaul cout << "Wrong input\n"; count++; break;
 			}
 
 			if (count == 3)	run();
@@ -139,17 +193,17 @@ public:
 		} while (true); 
 	}
 
-
+	//Employee_menu
 	//void  employee_menu(Employee& e) {
 
 	//}
+	
+
+
+	//Admin_menu
 	//void  admin_menu(Admin& a) {
 
 	//}
 
-
-
-
-	//cout << "Transaction failed: Insufficient balance.\n";
 };
 
