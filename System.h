@@ -54,11 +54,11 @@ private:
 public:
 	static  void run() {
 		delate();
-		welcom_screan();
 		int count{};
 		char choice;
 
 		do {
+			welcom_screan();
 			system("CLS");
 			cout << "====    Main Menu   ====\n\n";
 			cout << "1. login as Client\n";
@@ -163,9 +163,16 @@ public:
 		//ID
 		do {
 			system("cls");
-			cout << "Enter Client ID: ";
+			cout << "Enter Client ID (or press '1' to Cancel): ";
 			cin >> id;
 			cin.ignore();
+
+			if (id == 1) {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (searchForIdClient(id)) {
 				count++;
 				if (count == 2)
@@ -181,8 +188,15 @@ public:
 		count = 0;
 		do {
 			system("cls");
-			cout << "Enter Client Name: ";
+			cout << "Enter Client Name (or press '1' to Cancel): ";
 			getline(cin, name);
+
+			if (name == "1") {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(is_valid_name(name))) {
 				count++;
 				if (count == 2)
@@ -222,7 +236,7 @@ public:
 				count++;
 				if (count == 2)
 					return;
-				cout << "Invalid Balance, try again.\n";
+				cout << "Invalid Balance, The Min Balance Is 1500, Try Again.\n";
 				this_thread::sleep_for(chrono::seconds(2));
 			}
 			else
@@ -239,14 +253,22 @@ public:
 		system("cls");
 		cout << "Client added successfully.\n";
 		this_thread::sleep_for(chrono::seconds(2));
+		return;
 	}
 	static void search_for_client_by_id() {
 		int count{}, id;
 		do {
 			system("cls");
-			cout << "Enter Client ID: ";
+			cout << "Enter Client ID (or press '1' to Cancel): ";
 			cin >> id;
 			cin.ignore();
+
+			if (id == 1) {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(searchForIdClient(id))) {
 				count++;
 				if (count == 2) {
@@ -263,10 +285,12 @@ public:
 				cout << "Found. Client Tnfo...\n";
 				c->displayClintInfo();
 				system("pause");
+				return;
 			}
 		} while (true);
 	}
 	static void list_all_clients() {
+		system("cls");
 		cout << "---------  All Clients  ----------\n\n";
 		for (auto& c : clients) {
 			c.displayClintInfo();
@@ -279,10 +303,16 @@ public:
 		Client* c;
 
 		system("cls");
-		cout << "Enter Client ID: ";
+		cout << "Enter Client ID (or press '1' to Cancel): ";
 		cin >> id;
 		cin.ignore();
 
+		if (id == 1) {
+			system("cls");
+			cout << "Operation cancelled. Returning to menu...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			return;
+		}
 		if (!(searchForIdClient(id))) {
 			cout << "Can not find this Client\n";
 			this_thread::sleep_for(chrono::seconds(2));
@@ -311,64 +341,99 @@ public:
 			switch (choice) {
 				case '1': {
 					string name;
-
-					cout << "Enter New Client Name: ";
+					system("cls");
+					c->displayClintInfo();
+					cout << "Enter New Client Name (or press '1' to Cancel): ";
 					getline(cin, name);
 
+					if (name == "1") {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
 					if (!(is_valid_name(name))) {
 						cout << "Invalid Name.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 					else {
 						c->setName(name);
 						cout << "Name updated successfully.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 
 				}; break;
 				case '2': {
 					string password;
-
-					cout << "Enter Password: ";
+					system("cls");
+					c->displayClintInfo();
+					cout << "Enter Password (or press '1' to Cancel): ";
 					getline(cin, password);
 
+					if (password == "1") {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
 					if (!(is_valid_password(password))) {
 						cout << "Invalid Password.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 					else {
 						c->setPassword(password);
 						cout << "Password updated successfully.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 
 				}; break;
 				case '3': {
 					double balance;
-
-					cout << "Enter Balance: ";
+					system("cls");
+					c->displayClintInfo();
+					cout << "Enter Balance (or press '1' to Cancel): ";
 					cin >> balance;
 					cin.ignore();
 
-					if (!(is_min_balance(balance))) {
-						cout << "Invalid Balance.\n";
+					if (balance == 1) {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
+					if (!(is_min_balance(balance))) {
+						cout << "Invalid Balance, The Min Balance Is 1500, Try Again.\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 					else {
 						c->setBalance(balance);
 						cout << "Balance updated successfully.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 				}; break;
 				case '4': {
 					string currency;
-
-					cout << "Enter Currency: ";
+					system("cls");
+					c->displayClintInfo();
+					cout << "Enter Currency (or press '1' to Cancel): ";
 					getline(cin, currency);
+
+					if (currency == "1") {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
 					c->setCurrency(currency);
 					cout << "Currency updated successfully.\n";
 					this_thread::sleep_for(chrono::seconds(2));
-
+					return;
 				}; break;
 				case '5':return; break;
 				default: { cout << "Wrong input\n"; count++; } break;
@@ -377,16 +442,22 @@ public:
 				return;
 			if (anothe_obration() == false)
 				return;
-
 		} while (true);
 	}
 
 	static void login_as_employee() {
 		system("cls");
 		int id;
-		cout << "Enter your ID: ";
+		cout << "Enter your ID (or press '1' to Cancel): ";
 		cin >> id;
 		cin.ignore();
+
+		if (id == 1) {
+			system("cls");
+			cout << "Operation cancelled. Returning to menu...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			return;
+		}
 		if (!(searchForIdEmployee(id))) {
 			cout << "Can not find this ID\n";
 			this_thread::sleep_for(chrono::seconds(2));
@@ -397,9 +468,15 @@ public:
 		string password;
 		int count = 0;
 		do {
-			cout << "Enter your Password: ";
+			cout << "Enter your Password (or press '1' to Cancel):";
 			getline(cin, password);
 
+			if (password == "1") {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(e->getPassword() == password)) {
 				system("cls");
 				cout << "Invalid Password, try again.\n";
@@ -431,11 +508,11 @@ public:
 			cin >> choice;
 
 			switch (choice) {
-				case '1':add_new_client(); break;
-				case '2':search_for_client_by_id(); break;
-				case '3':list_all_clients(); break;
-				case '4':edit_info_client(); break;
-				case '5':e.displayEmployeeInfo(); break;
+				case '1': {add_new_client(); } break;
+				case '2': {search_for_client_by_id();} break;
+				case '3': {list_all_clients();} break;
+				case '4': {edit_info_client();} break;
+				case '5': { system("cls"); e.displayEmployeeInfo(); system("pause"); } break;
 				case '6':return; break;
 				default: { cout << "Wrong input\n"; count++; } break;
 			}
@@ -457,9 +534,16 @@ public:
 		//ID
 		do {
 			system("cls");
-			cout << "Enter Employee ID: ";
+			cout << "Enter Employee ID (or press '1' to Cancel): ";
 			cin >> id;
 			cin.ignore();
+
+			if (id == 1) {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (searchForIdEmployee(id)) {
 				count++;
 				if (count == 2)
@@ -475,8 +559,15 @@ public:
 		count = 0;
 		do {
 			system("cls");
-			cout << "Enter Employee Name: ";
+			cout << "Enter Employee Name (or press '1' to Cancel): ";
 			getline(cin, name);
+
+			if (name == "1") {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(is_valid_name(name))) {
 				count++;
 				if (count == 2)
@@ -492,8 +583,15 @@ public:
 		count = 0;
 		do {
 			system("cls");
-			cout << "Enter Password: ";
+			cout << "Enter Password (or press '1' to Cancel): ";
 			getline(cin, password);
+
+			if (password == "1") {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(is_valid_password(password))) {
 				count++;
 				if (count == 2)
@@ -509,14 +607,21 @@ public:
 		count = 0;
 		do {
 			system("cls");
-			cout << "Enter Salary: ";
+			cout << "Enter Salary (or press '1' to Cancel): ";
 			cin >> salary;
 			cin.ignore();
+
+			if (salary == 1) {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(is_min_salary(salary))) {
 				count++;
 				if (count == 2)
 					return;
-				cout << "Invalid Salary, try again.\n";
+				cout << "Invalid Salary,The Min Salary Ts 5000, Try Again.\n";
 				this_thread::sleep_for(chrono::seconds(2));
 			}
 			else
@@ -525,22 +630,36 @@ public:
 		} while (true);
 		//Currency
 		system("cls");
-		cout << "Enter Currency: ";
+		cout << "Enter Currency (or press '1' to Cancel): ";
 		getline(cin, currency);
 
+		if (currency == "1") {
+			system("cls");
+			cout << "Operation cancelled. Returning to menu...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			return;
+		}
 		Employee e(id, name, password, salary, currency);
 		employee.push_back(e);
 		system("cls");
 		cout << "Employee added successfully.\n";
 		this_thread::sleep_for(chrono::seconds(2));
+		return;
 	}
 	static void  search_for_employee_by_id(){
 		int count{}, id;
 		do {
 			system("cls");
-			cout << "Enter Employee ID: ";
+			cout << "Enter Employee ID (or press '1' to Cancel): ";
 			cin >> id;
 			cin.ignore();
+
+			if (id == 1) {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(searchForIdEmployee(id))) {
 				count++;
 				if (count == 2) {
@@ -557,11 +676,13 @@ public:
 				cout << "Found. Employee Tnfo...\n";
 				e->displayEmployeeInfo();
 				system("pause");
+				return;
 			}
 		} while (true);
 	
 	}
 	static void  list_all_employees(){
+		system("cls");
 		cout << "---------  All Employee  ----------\n\n";
 		for (auto& e : employee) {
 			e.displayEmployeeInfo();
@@ -574,10 +695,16 @@ public:
 		Employee* e;
 
 		system("cls");
-		cout << "Enter Client ID: ";
+		cout << "Enter Employee ID (or press '1' to Cancel): ";
 		cin >> id;
 		cin.ignore();
 
+		if (id == 1) {
+			system("cls");
+			cout << "Operation cancelled. Returning to menu...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			return;
+		}
 		if (!(searchForIdEmployee(id))) {
 			cout << "Can not find this Client\n";
 			this_thread::sleep_for(chrono::seconds(2));
@@ -606,64 +733,99 @@ public:
 			switch (choice) {
 				case '1': {
 					string name;
-
-					cout << "Enter New Employee Name: ";
+					system("cls");
+					e = find_employee(id);
+					cout << "Enter New Employee Name (or press '1' to Cancel): ";
 					getline(cin, name);
 
+					if (name == "1") {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
 					if (!(is_valid_name(name))) {
 						cout << "Invalid Name.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 					else {
 						e->setName(name);
 						cout << "Name updated successfully.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 
 				}; break;
 				case '2': {
 					string password;
-
-					cout << "Enter Password: ";
+					system("cls");
+					e = find_employee(id);
+					cout << "Enter Password (or press '1' to Cancel): ";
 					getline(cin, password);
 
+					if (password == "1") {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
 					if (!(is_valid_password(password))) {
 						cout << "Invalid Password.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 					else {
 						e->setPassword(password);
 						cout << "Password updated successfully.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 
 				}; break;
 				case '3': {
 					double salary;
-
-					cout << "Enter Balance: ";
+					system("cls");
+					e = find_employee(id);
+					cout << "Enter Balance (or press '1' to Cancel): ";
 					cin >> salary;
 					cin.ignore();
 
-					if (!(is_min_salary(salary))) {
-						cout << "Invalid Salary.\n";
+					if (salary == 1) {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
+					if (!(is_min_salary(salary))) {
+						cout << "Invalid Salary,The Min Salary Ts 5000, Try Again.\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 					else {
 						e->setSalary(salary);
 						cout << "Salary updated successfully.\n";
 						this_thread::sleep_for(chrono::seconds(2));
+						return;
 					}
 				}; break;
 				case '4': {
 					string currency;
-
-					cout << "Enter Currency: ";
+					system("cls");
+					e = find_employee(id);
+					cout << "Enter Currency (or press '1' to Cancel): ";
 					getline(cin, currency);
 					e->setCurrency(currency);
+
+					if (currency == "1") {
+						system("cls");
+						cout << "Operation cancelled. Returning to menu...\n";
+						this_thread::sleep_for(chrono::seconds(2));
+						return;
+					}
 					cout << "Currency updated successfully.\n";
 					this_thread::sleep_for(chrono::seconds(2));
-
+					return;
 				}; break;
 				case '5':return; break;
 				default: { cout << "Wrong input\n"; count++; } break;
@@ -690,8 +852,8 @@ public:
 			cout << "7. List All Employees \n";
 			cout << "8. Edit Employee \n";
 			cout << "9. Display Your Info \n";
-			cout << "10. Main Menu\n";
-			cout << "\nChoice (1-10): ";
+			cout << "0. Main Menu\n";
+			cout << "\nChoice (0-9): ";
 
 			char choice;
 			cin >> choice;
@@ -705,8 +867,8 @@ public:
 				case '6':search_for_employee_by_id(); break;
 				case '7':list_all_employees(); break;
 				case '8':edit_employee(); break;
-				case '9':a.displayEmployeeInfo(); break;
-				case '10':return; break;
+				case '9': { system("cls"); a.displayEmployeeInfo();system("pause");}break;
+				case '0':return; break;
 				default: { cout << "Wrong input\n"; count++; } break;
 			}
 			if (count == 3)
@@ -719,9 +881,16 @@ public:
 	static void login_as_admin() {
 		system("cls");
 		int id;
-		cout << "Enter your ID: ";
+		cout << "Enter your ID (or press '1' to Cancel): ";
 		cin >> id;
 		cin.ignore();
+
+		if (id == 1) {
+			system("cls");
+			cout << "Operation cancelled. Returning to menu...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			return;
+		}
 		if (!(searchForIdAdmin(id))) {
 			cout << "Can not find this ID\n";
 			this_thread::sleep_for(chrono::seconds(2));
@@ -732,9 +901,15 @@ public:
 		string password;
 		int count = 0;
 		do {
-			cout << "Enter your Password: ";
+			cout << "Enter your Password (or press '1' to Cancel): ";
 			getline(cin, password);
 
+			if (password == "1") {
+				system("cls");
+				cout << "Operation cancelled. Returning to menu...\n";
+				this_thread::sleep_for(chrono::seconds(2));
+				return;
+			}
 			if (!(a->getPassword() == password)) {
 				system("cls");
 				cout << "Invalid Password, try again.\n";
@@ -751,18 +926,18 @@ public:
 	}
 	////////////////////////////////////
 
-	//client_menu
+	//client
 	///////////////////////////////////////
 	static bool anothe_obration() {
 		int count{};
 		do {
 			system("cls");
-			cout << "Do you want to make another transaction (y/n)?\n";
+			cout << "Do you want to make another transaction (y/n) or (1/0)?\n";
 			char choice;
 			cin >> choice;
 
-			if (choice == 'y' || choice == 'Y') return true;
-			else if (choice == 'n' || choice == 'N') return false;
+			if (choice == 'y' || choice == 'Y' || choice == '1') return true;
+			else if (choice == 'n' || choice == 'N' || choice == '0') return false;
 			else {
 				cout << "Wrong input\n";
 				this_thread::sleep_for(chrono::seconds(2));
@@ -849,10 +1024,16 @@ public:
 		int amount, recipientId;
 
 
-		cout << "Enter Recipient ID: ";
+		cout << "Enter Recipient ID (or press '1' to return): ";
 		cin >> recipientId;
 		cin.ignore();
 
+		if (recipientId == 1) {
+			system("cls");
+			cout << "Operation cancelled. Returning to menu...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			return ;
+		}
 		if (recipientId == c.getID()) {
 			cout << "Cannot transfer to your own account.\n";
 			this_thread::sleep_for(chrono::seconds(2));
@@ -915,9 +1096,17 @@ public:
 	static void login_as_client() {
 		system("cls");
 		int id;
-		cout << "Enter your ID: ";
+		cout << "Enter your ID (or press '1' to return): ";
 		cin >> id;
 		cin.ignore();
+
+		if (id == 1) {
+			system("cls");
+			cout << "Operation cancelled. Returning to menu...\n";
+			this_thread::sleep_for(chrono::seconds(2));
+			return;
+		}
+
 		if (!(searchForIdClient(id))) {
 			cout << "Can not find this ID\n";
 			this_thread::sleep_for(chrono::seconds(2));
