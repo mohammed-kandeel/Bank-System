@@ -32,12 +32,17 @@ public:
 	void transFerTo(double amount, Client& recipient) {
 		if (amount <=account.getBalance()) {
 			account.withDraw(amount);
-
 			recipient.deposit(amount);
 		}
 	}
 	void checkBalance() {
 		account.displayAccount();
+	}
+	void setBalance(double balance) {
+		account.setBalance(balance);
+	}
+	void setCurrency(string currency) {
+		account.setCurrency(currency);
 	}
 
 	bool checkAvailableBalance(double amount) {

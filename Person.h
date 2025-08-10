@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 class Person{
-
 protected:
 	//atts
 	int id;
@@ -44,4 +44,3 @@ public:
 		cout << "ID: " << id << endl;
 	}
 };
-
