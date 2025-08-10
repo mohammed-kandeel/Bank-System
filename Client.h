@@ -6,6 +6,8 @@
 using namespace std;
 
 class Client :public Person {
+private:
+	//att
 	Account account;
 	static int number_of_Clients;
 public:

@@ -7,6 +7,9 @@ using namespace std;
 
 class Validation{
 
+
+
+
 public:
 	 //screan
 	static void welcom_screan() {
@@ -35,9 +38,6 @@ public:
 	}
 	static void EX_screan() {
 		system("CLS");
-		//	"Thank you for using the banking system.
-		//See you soon."
-
 		system("color 0B");
 		cout << "\n\n\n\n\n\n\n\n\n\n\n"
 			<< "\n######## ##     ##    ###    ##    ## ##    ##    ##    ##  #######  ##     ##    ########  #######  ########     ##     ##  ######  #### ##    ##  ######  "
@@ -61,30 +61,14 @@ public:
 		this_thread::sleep_for(chrono::seconds(10));
 		system("CLS");
 		system("color 0F");
-
 	}
 
-	//client
-	static bool is_valid_name(string name) {
-		if (!(name.size() >= 5 && name.size() <= 20))
-			return false;
 
-		for (int i : name) {
-			if (!((i >= 'a' && i <= 'z') || (i >= 'A' && i <= 'Z'))) {
-				return false;
-			}
-		}
-		return true;
-	}
-	static bool is_valid_password(string password) {
-		return(password.size() >= 8 && password.size() <= 20);
-	}
-	static bool is_min_balance(double amount) {
-		return (amount >= 1500);
-	}
+
 	static bool is_min_salary(double amount) {
 		return (amount >= 5000);
 	}
+
 	
 };
 

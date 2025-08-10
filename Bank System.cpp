@@ -12,10 +12,7 @@ using namespace std;
 
 
 int main(){
-	//System s;
-	System ::run();
-
-
+	System::run();
 
 }
 

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+#include<vector>
+
 #include "Client.h"
 #include "Employee.h"
 #include "Admin.h"
@@ -10,14 +12,135 @@
 #include <thread>
 
 #include "Validation.h"
+using namespace std;
+
 
 class System{
 private:
-
+static vector<Client>clients;
 
 
 public:
 
+	/////////////////////////////////////
+	static bool searshForId(int id) {
+		for (auto c : clients) {
+			if (c.getID() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	static bool is_valid_name(string name) {
+		if (!(name.size() >= 5 && name.size() <= 20))
+			return false;
+
+		for (auto i : name) {
+			if (!((i >= 'a' && i <= 'z') || (i >= 'A' && i <= 'Z') || (i == ' ')))
+				return false;
+		}
+		return true;
+	}
+	static bool is_valid_password(string password) {
+		return(password.size() >= 8 && password.size() <= 20);
+	}
+	static bool is_min_balance(double amount) {
+		return (amount >= 1500);
+	}
+	static void addClient(Client& c) {
+		clients.push_back(c);
+	}
+	static void createNewClient() {
+		
+		int count{}, id;
+		string name, password, currency;
+		double balance;
+		//ID
+		do{
+			cout << "Enter Client ID: ";
+			cin >> id;
+			cin.ignore();
+			if (searshForId(id)) {
+				count++;
+				if (count == 2)
+					return;
+				cout << "Invalid ID, try again.\n";
+				this_thread::sleep_for(chrono::seconds(2));
+			}
+			else
+				break;
+			
+		} while (true);
+		//Name
+		count = 0;
+		do {
+			cout << "Enter Client Name: ";
+			getline(cin, name);
+			if (is_valid_name(name)) {
+				count++;
+				if (count == 2)
+					return;
+				cout << "Invalid Name, try again.\n";
+				this_thread::sleep_for(chrono::seconds(2));
+			}
+			else
+				break;
+
+		} while (true);
+		//Password
+		count = 0;
+		do {
+			cout << "Enter Password: ";
+			getline(cin, password);
+			if (is_valid_password(password)) {
+				count++;
+				if (count == 2)
+					return;
+				cout << "Invalid Password, try again.\n";
+				this_thread::sleep_for(chrono::seconds(2));
+			}
+			else
+				break;
+
+		} while (true);
+		//Balance
+		count = 0;
+		do {
+			cout << "Enter Balance: ";
+			cin >> balance;
+			cin.ignore();
+			if (is_min_balance(balance)) {
+				count++;
+				if (count == 2)
+					return;
+				cout << "Invalid Balance, try again.\n";
+				this_thread::sleep_for(chrono::seconds(2));
+			}
+			else
+				break;
+
+		} while (true);
+		//Currency
+		cout << "Enter Currency: ";
+		getline(cin, currency);
+
+		Client c(id, name, password, balance, currency);
+
+		addClient(c);
+
+		cout << "Client added successfully.\n";
+		this_thread::sleep_for(chrono::seconds(2));
+	}
+	static Client* findClientId(int id) {
+		for (auto c : clients) {
+			if (c.getID() == id )
+				return &c;
+			else
+				return nullptr;
+		}
+	}
+	/////////////////////////////////////
+	
 
 	static void run() {
 		Validation::welcom_screan();
@@ -30,12 +153,10 @@ public:
 			cout << "3. login as Admin\n";
 			cout << "4. Exit\n";
 			cout << "\nChoice (1-4): ";
-
 			cin >> choice;
 
 			if (choice == 1)
 				login_as_client();
-
 			else if (choice == 4) {
 				Validation::EX_screan();
 				return;
@@ -45,14 +166,22 @@ public:
 	}
 
 	//login
-	static void  login_as_client() {
+	static void login_as_client() {
+		
+		int id;
+		string password;
 
+		cout << "Enter your ID: ";
+		cin >> id;
+		cin.ignore();
+		
 
+		Client* c = findClientId(id);
 
 
 		//test
-		Client c(111, "mmm", "123", 1500, "EG"), c2(222, "aaa", "1234", 100, "EG");
-		client_menu(c);
+		//Client c(111, "mmm", "123", 1500, "EG"), c2(222, "aaa", "1234", 100, "EG");
+		//client_menu(c);
 	}
 	
 	//void  login_as_employee() {}
@@ -81,6 +210,9 @@ public:
 
 		} while (true);
 	}
+
+
+
 	static int getValidAmount(const string &titel) {
 		int count{};
 		int amount;
@@ -118,6 +250,9 @@ public:
 
 		} while (true);
 	}
+
+
+
 	static void deposit(Client& c) {
 		system("CLS");
 
@@ -130,6 +265,9 @@ public:
 		
 		this_thread::sleep_for(chrono::seconds(3));
 	}
+
+
+
 	static void withdraw(Client& c) {
 		system("CLS");
 
@@ -186,7 +324,6 @@ public:
 			cout << "3. Balance\n";
 			cout << "4. Transfer\n";
 			cout << "5. Main Menu\n";
-
 			cout << "\nChoice (1-5): ";
 
 			char choice;
@@ -201,7 +338,7 @@ public:
 				default: { cout << "Wrong input\n"; count++; } break;
 			}
 			if (count == 3)
-				break;
+				return;
 			if (anothe_obration() == false)
 				return;
 
