@@ -58,8 +58,8 @@ public:
 		char choice;
 
 		do {
-			//welcom_screan();
-			//system("CLS");
+			welcom_screan();
+			system("CLS");
 			cout << "====    Main Menu   ====\n\n";
 			cout << "1. login as Client\n";
 			cout << "2. login as Employee\n";
@@ -1137,7 +1137,7 @@ public:
 	
 	//screan
 	///////////////////////////////////////
-	/*static void welcom_screan() {
+	static void welcom_screan() {
 		system("CLS");
 		system("color 0b");
 
@@ -1160,7 +1160,7 @@ public:
 		system("color 0F");
 		system("cls");
 
-	}*/
+	}
 	static void EX_screan() {
 		system("CLS");
 		system("color 0B");
