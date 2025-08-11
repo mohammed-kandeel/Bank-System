@@ -2,57 +2,121 @@
 #include <iostream>
 #include <string>
 #include "Person.h"
-#include "Account.h"
 using namespace std;
 
 class Client :public Person {
 private:
-	//att
-	Account account;
-	static int number_of_Clients;
+	//atts
+	double balance;
+	string currency;
+	
 public:
 
 	//cons
+	Client() {}
 	Client(int id, string name, string password, double balance, string currency) : Person(id, name, password){
+		this->balance = balance;
+		this->currency = currency;
 		setBalance(balance);
 		setCurrency(currency);
-		number_of_Clients++;
 	}
 	//des
 	~Client(){}
-	//meths
-	void displayClintInfo() {
-		Person::displayPersonInfo();
-		account.displayAccount();
+	//gets
+	double getBalance() {
+		return balance;
 	}
-	//account's meths
-	void deposit(double amount) {
-		account.deposit(amount);
+	string getCurrency() {
+		return currency;
 	}
-	void withDraw(double amount) {
-		account.withDraw(amount);
-	}
-	void transFerTo(double amount, Client& recipient) {
-		if (amount <=account.getBalance()) {
-			account.withDraw(amount);
-			recipient.deposit(amount);
-		}
-	}
-	void checkBalance() {
-		account.displayAccount();
-	}
+	//sets
 	void setBalance(double balance) {
 		if (Validation::is_min_balance(balance))
-			account.setBalance(balance);
+			this->balance = balance;
 		else
 			cout << "Balance must be >= 1500\n";
 	}
 	void setCurrency(string currency) {
-		account.setCurrency(currency);
+		this->currency = currency;
+	}
+	//meths
+	void deposit(double amount) {
+		if (amount > 0){
+			balance += amount;
+			cout << "\nDeposit successful. " << amount << " has been added to your account." << endl;
+		}
+		else
+			cout << "\nAmount must be 100 or a multiple of 100.\n";
+	}
+	void withDraw(double amount) {
+		if (amount <= balance) {
+			balance -= amount;
+			cout << "\nDeposit successful. " << amount << " has been added to your account." << endl;
+		}
+		else
+			cout << "\nAmount must be 100 or a multiple of 100.\n";
+	}
+	void transFerTo(double amount, Client& recipient) {
+
+		if (this->id == recipient.id) {
+			cout << "Cannot transfer to your own account.\n";
+			return;
+		}
+		if (amount <= balance) {
+			withDraw(amount);
+			recipient.deposit(amount);
+			cout << "Transfer successful! " << amount << " has been transferred to " << recipient.name << ".\n";
+		}
+		else
+			cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
+	}
+	bool checkAvailableBalance(double amount) {
+		return balance >= amount;
+	}
+	void displayClintInfo() {
+		displayPersonInfo();
+		cout << "Balance: " << balance << " " << currency << endl;
 	}
 
-	bool checkAvailableBalance(double amount) {
-		return account.checkAvailableBalance(amount);
+
+
+
+
+
+
+	// instapay/vodafonecash
+	void Ewallet(string mobile_number, double amount, string otp, string user_otp)
+	{
+		if (amount > balance)
+		{
+			cout << "invaild amount \n";
+		}
+		if (otp != user_otp)
+		{
+			cout << "wrong otp \n";
+		}
+		else
+		{
+			balance -= amount;
+			cout << "withdrawal from " << mobile_number << " was successfu \n";
+		}
+	}
+	// ?? ???? ?????
+	void receipt()
+	{
+		char choice;
+		cin >> choice;
+		cin.ignore();
+		cout << "do u want a receipt? (save the environment) ";
+		// ?????? ????? ?? ??? ??
+		if (choice == 'y')
+		{
+			cout << "printing receipt... \n";
+		}
+		else
+		{
+			cout << "transaction dn without receipt \n";
+		}
 	}
 };
 

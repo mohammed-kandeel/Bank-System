@@ -12,6 +12,9 @@ protected:
 
 public:
 	//cons
+	Person() {
+		this->id = 0;
+	}
 	Person(int id, string name, string password) {
 		this->id = id;
 		setName(name);
@@ -27,13 +30,13 @@ public:
 		if (Validation::is_valid_name(name))
 			this->name = name;
 		else 
-			cout << "Invalid name.\n";
+			cout << "Invalid name. Name must contain only letters and be between 8 and 20 characters.\n";
 	}
 	void setPassword(string password) {
 		if (Validation::is_valid_password(password))
 			this->password = password;
 		else
-			cout << "Invalid password.\n";
+			cout << "Invalid password.\nPassword must be between 8 and 20 characters.\n";
 	}
 	//gets
 	int getID() {
@@ -46,7 +49,6 @@ public:
 		return password;
 	}
 	//meths
-	
 	void displayPersonInfo() {
 		cout << "Name: " << name << endl;
 		cout << "ID: " << id << endl;

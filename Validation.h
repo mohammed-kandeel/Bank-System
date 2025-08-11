@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
+
 class Validation{
 public:
 	static bool is_valid_name(string name) {
@@ -23,9 +24,5 @@ public:
 	static bool is_min_salary(double amount) {
 		return (amount >= 5000);
 	}
-
-
-
-
 };
 
