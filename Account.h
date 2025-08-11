@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include"Validation.h"
 using namespace std;
 
 class Account{
@@ -18,6 +19,8 @@ public:
 		this->balance = balance;
 		this->currency = currency;
 	}
+	//des
+	~Account() {}
 	//sets
 	void setBalance(double balance) {
 		this->balance = balance;
@@ -47,4 +50,5 @@ public:
 	bool checkAvailableBalance(double amount) {
 		return balance >= amount;
 	}
+
 };

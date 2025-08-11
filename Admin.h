@@ -9,6 +9,12 @@ class Admin :public Employee {
 public:
 	//cons
 	Admin(int id, string name, string password, double salary, string currency) : Employee(id, name, password, salary, currency) {}
+	//des
+	~Admin(){}
+
+
+
+
 
 	//meths
 	/*void  add_new_employee(){

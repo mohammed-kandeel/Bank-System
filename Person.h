@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
-
+#include"Validation.h"
 using namespace std;
 
 class Person{
@@ -14,18 +14,26 @@ public:
 	//cons
 	Person(int id, string name, string password) {
 		this->id = id;
-		this->name = name;
-		this->password = password;
+		setName(name);
+		setPassword(password);
 	}
+	//des
+	~Person(){}
 	//sets
 	void setID(int id) {
 		this->id = id;
 	}
 	void setName(string name) {
-		this->name = name;
+		if (Validation::is_valid_name(name))
+			this->name = name;
+		else 
+			cout << "Invalid name.\n";
 	}
 	void setPassword(string password) {
-		this->password = password;
+		if (Validation::is_valid_password(password))
+			this->password = password;
+		else
+			cout << "Invalid password.\n";
 	}
 	//gets
 	int getID() {

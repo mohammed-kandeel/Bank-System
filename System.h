@@ -21,32 +21,32 @@ private:
 	static vector<Admin>admin;
 
 	static void delate() {
-		Admin a(12345671, "mohamed", "123", 6000, "EG");
+		Admin a(12345671, "aa", "12345678", 6000, "EG");
 		admin.push_back(a);
-		Admin a2(12345672, "ali ali", "123", 6500, "EG");
+		Admin a2(12345672, "ali ali", "12345678", 6500, "EG");
 		admin.push_back(a2);
-		Admin a3(12345673, "mahmoud", "123", 7000, "EG");
+		Admin a3(12345673, "mahmoud", "12345678", 7000, "EG");
 		admin.push_back(a3);
-		Admin a4(12345674, "mohamed esam", "123", 7500, "EG");
+		Admin a4(12345674, "mohamed esam", "12345678", 7500, "EG");
 		admin.push_back(a4);
 
-		Employee e(12345671, "mohamed", "123", 6000, "EG");
+		Employee e(12345671, "mohamed", "12345678", 6000, "EG");
 		employee.push_back(e);
-		Employee e2(12345672, "ali ali", "123", 6500, "EG");
+		Employee e2(12345672, "ali ali", "12345678", 6500, "EG");
 		employee.push_back(e2);
-		Employee e3(12345673, "mahmoud", "123", 7000, "EG");
+		Employee e3(12345673, "mahmoud", "12345678", 7000, "EG");
 		employee.push_back(e3);
-		Employee e4(12345674, "mohamed esam", "123", 7500, "EG");
+		Employee e4(12345674, "mohamed esam", "12345678", 7500, "EG");
 		employee.push_back(e4);
 
 
-		Client c(12345671, "mohamed", "123", 6000, "EG");
+		Client c(12345671, "mohamed", "12345678", 6000, "EG");
 		clients.push_back(c);
-		Client c2(12345672, "ali ali", "123", 6500, "EG");
+		Client c2(12345672, "ali ali", "12345678", 6500, "EG");
 		clients.push_back(c2);
-		Client c3(12345673, "mahmoud", "123", 7000, "EG");
+		Client c3(12345673, "mahmoud", "12345678", 7000, "EG");
 		clients.push_back(c3);
-		Client c4(12345674, "mohamed esam", "123", 7500, "EG");
+		Client c4(12345674, "mohamed esam", "12345678", 7500, "EG");
 		clients.push_back(c4);
 
 	}
@@ -58,8 +58,8 @@ public:
 		char choice;
 
 		do {
-			welcom_screan();
-			system("CLS");
+			//welcom_screan();
+			//system("CLS");
 			cout << "====    Main Menu   ====\n\n";
 			cout << "1. login as Client\n";
 			cout << "2. login as Employee\n";
@@ -148,7 +148,6 @@ public:
 	static bool is_min_balance(double amount) {
 		return (amount >= 1500);
 	}
-
 	static bool is_min_salary(double amount) {
 		return (amount >= 5000);
 	}
@@ -1138,7 +1137,7 @@ public:
 	
 	//screan
 	///////////////////////////////////////
-	static void welcom_screan() {
+	/*static void welcom_screan() {
 		system("CLS");
 		system("color 0b");
 
@@ -1161,7 +1160,7 @@ public:
 		system("color 0F");
 		system("cls");
 
-	}
+	}*/
 	static void EX_screan() {
 		system("CLS");
 		system("color 0B");
