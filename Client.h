@@ -13,12 +13,15 @@ private:
 public:
 
 	//cons
-	Client() {}
-	Client(int id, string name, string password, double balance, string currency) : Person(id, name, password){
+	Client() {
+		this->balance = 0;
+		this->currency = "EG";
+	}
+	Client(int id, string name, string password, double balance) : Person(id, name, password){
 		this->balance = balance;
 		this->currency = currency;
 		setBalance(balance);
-		setCurrency(currency);
+		this->currency = "EG";
 	}
 	//des
 	~Client(){}
@@ -36,9 +39,9 @@ public:
 		else
 			cout << "Balance must be >= 1500\n";
 	}
-	void setCurrency(string currency) {
-		this->currency = currency;
-	}
+	//void setCurrency(string currency) {
+	//	this->currency = currency;
+	//}
 	//meths
 	void deposit(double amount) {
 		if (amount > 0){

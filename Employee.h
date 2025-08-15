@@ -11,10 +11,13 @@ protected:
 	string currency;
 public:
 	//cons
-	Employee(){}
-	Employee(int id, string name, string password, double salary, string currency) : Person(id, name, password) {
+	Employee(){
+		this->salary = 0;
+		this->currency = "EG";
+	}
+	Employee(int id, string name, string password, double salary) : Person(id, name, password) {
 		setSalary(salary);
-		this->currency = currency;
+		this->currency = "EG";
 	}
 	//des
 	~Employee(){}
@@ -32,9 +35,9 @@ public:
 		else
 			cout << "salary must be >= 5000\n";
 	}
-	void setCurrency(string currency) {
-		this->currency = currency;
-	}
+	//void setCurrency(string currency) {
+	//	this->currency = currency;
+	//}
 	//meths
 	void displayEmployeeInfo() {
 		Person::displayPersonInfo();
