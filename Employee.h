@@ -1,8 +1,5 @@
 #pragma once
-#include <iostream>
-#include <string>
 #include "Person.h"
-using namespace std;
 
 class Employee :public Person {
 protected:
@@ -35,9 +32,6 @@ public:
 		else
 			cout << "salary must be >= 5000\n";
 	}
-	//void setCurrency(string currency) {
-	//	this->currency = currency;
-	//}
 	//meths
 	void displayEmployeeInfo() {
 		Person::displayPersonInfo();

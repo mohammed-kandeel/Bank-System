@@ -50,7 +50,8 @@ public:
 	}
 	//meths
 	void displayPersonInfo() {
-		cout << "Name: " << name << endl;
 		cout << "ID: " << id << endl;
+		cout << "Name: " << name << endl;
+		cout << "Password: " << password << endl;
 	}
 };

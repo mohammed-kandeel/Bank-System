@@ -1,8 +1,5 @@
 #pragma once
-#include <iostream>
-#include <string>
 #include "Person.h"
-using namespace std;
 
 class Client :public Person {
 private:
@@ -11,9 +8,8 @@ private:
 	string currency;
 	
 public:
-
 	//cons
-	Client() {
+	Client(){
 		this->balance = 0.0;
 		this->currency = "EG";
 	}
@@ -36,28 +32,16 @@ public:
 	void setBalance(double balance) {
 		if (Validation::is_min_balance(balance))
 			this->balance = balance;
-		else
-			cout << "Balance must be >= 1500\n";
+		else cout << "Balance must be >= 1500\n";
 	}
-	//void setCurrency(string currency) {
-	//	this->currency = currency;
-	//}
-	//meths
 	void deposit(double amount) {
-		if (amount >= 100 && (int)amount % 100 == 0) {
-			balance += amount;
-			cout << "\nDeposit successful. " << amount << " has been added to your account." << endl;
-		}
-		else
-			cout << "\nAmount must be 100 or a multiple of 100.\n";
+		balance += amount;
 	}
 	void withDraw(double amount) {
-		if (amount <= balance && (int)amount % 100 == 0) {
+		if (amount <= balance ) {
 			balance -= amount;
-			cout << "\nDeposit successful. " << amount << " has been added to your account." << endl;
 		}
-		else
-			cout << "\nAmount must be 100 or a multiple of 100.\n";
+		else cout << "\nInvalid Amount\n";
 	}
 	void transFerTo(double amount, Client& recipient) {
 		if (this->id == recipient.id) {
@@ -76,7 +60,7 @@ public:
 		return balance >= amount;
 	}
 	void displayClintInfo() {
-		displayPersonInfo();
+		Person::displayPersonInfo();
 		cout << "Balance: " << balance << " " << currency << endl;
 	}
 
