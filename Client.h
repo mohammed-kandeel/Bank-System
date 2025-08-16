@@ -14,7 +14,7 @@ public:
 
 	//cons
 	Client() {
-		this->balance = 0;
+		this->balance = 0.0;
 		this->currency = "EG";
 	}
 	Client(int id, string name, string password, double balance) : Person(id, name, password){

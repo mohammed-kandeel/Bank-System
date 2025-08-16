@@ -12,7 +12,7 @@ protected:
 public:
 	//cons
 	Employee(){
-		this->salary = 0;
+		this->salary = 0.0;
 		this->currency = "EG";
 	}
 	Employee(int id, string name, string password, double salary) : Person(id, name, password) {
