@@ -44,7 +44,7 @@ public:
 	//}
 	//meths
 	void deposit(double amount) {
-		if (amount > 0){
+		if (amount >= 100 && (int)amount % 100 == 0) {
 			balance += amount;
 			cout << "\nDeposit successful. " << amount << " has been added to your account." << endl;
 		}
@@ -52,7 +52,7 @@ public:
 			cout << "\nAmount must be 100 or a multiple of 100.\n";
 	}
 	void withDraw(double amount) {
-		if (amount <= balance) {
+		if (amount <= balance && (int)amount % 100 == 0) {
 			balance -= amount;
 			cout << "\nDeposit successful. " << amount << " has been added to your account." << endl;
 		}
@@ -60,7 +60,6 @@ public:
 			cout << "\nAmount must be 100 or a multiple of 100.\n";
 	}
 	void transFerTo(double amount, Client& recipient) {
-
 		if (this->id == recipient.id) {
 			cout << "Cannot transfer to your own account.\n";
 			return;
@@ -101,7 +100,7 @@ public:
 		else
 		{
 			balance -= amount;
-			cout << "withdrawal from " << mobile_number << " was successfu \n";
+			cout << "withdrawal from " << mobile_number << " was successful \n";
 		}
 	}
 	// ?? ???? ?????
