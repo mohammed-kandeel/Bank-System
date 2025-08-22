@@ -50,6 +50,7 @@ public:
 		cout << "Salary: " << salary << " " << currency << endl;
 	}
 	void saveNewClienttoFile(Client& c); // .ccp
+
 	void addClient(Client& c) {
 		Client::clients.insert({ c.getID(),c });
 		saveNewClienttoFile(c);
