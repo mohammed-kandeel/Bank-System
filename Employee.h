@@ -51,9 +51,9 @@ public:
 	}
 	void saveNewClienttoFile(Client& c); // .ccp
 
-	void addClient(Client& c) {
-		Client::clients.insert({ c.getID(),c });
-		saveNewClienttoFile(c);
+	void addClient(Client& client) {
+		Client::clients.insert({ client.getID(),client });
+		saveNewClienttoFile(client);
 		cout << "Client added successfully.\n";
 		this_thread::sleep_for(chrono::seconds(4));
 	}
