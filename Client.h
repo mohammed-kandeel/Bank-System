@@ -9,16 +9,14 @@ private:
 	string currency;
 	
 public:
-
-
+	//Data
 	static map<int, Client> clients;
-	bool operator<(const Client& c) const {  // This operator is required in set to compare clients and sort data
-		return this->id < c.id;
-	}
-	bool operator=(const Client& c) const {  // This operator is required in set to compare clients
-		return this->id == c.id;
-	}
-
+	//bool operator<(const Client& c) const {  // This operator is required in set to compare clients and sort data
+	//	return this->id < c.id;
+	//}
+	//bool operator=(const Client& c) const {  // This operator is required in set to compare clients
+	//	return this->id == c.id;
+	//}
 	//cons
 	Client(){
 		this->balance = 0.0;

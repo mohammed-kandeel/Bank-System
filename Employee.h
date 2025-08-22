@@ -14,12 +14,11 @@ protected:
 	double salary;
 	string currency;
 public:
-
-
+	//Data
 	static map<int,Employee>employees;
-	bool operator<(const Employee& e) const {  // This operator is required in set to compare clients and sort data
-		return this->id < e.id;
-	}
+	//bool operator<(const Employee& e) const {  // This operator is required in set to compare clients and sort data
+	//	return this->id < e.id;
+	//}
 	//cons
 	Employee(){
 		this->salary = 0.0;
@@ -50,9 +49,42 @@ public:
 		Person::displayPersonInfo();
 		cout << "Salary: " << salary << " " << currency << endl;
 	}
-
-	int getNewClientIDfromFile(); // .ccp
 	void saveNewClienttoFile(Client& c); // .ccp
+	void addClient(Client& c) {
+		Client::clients.insert({ c.getID(),c });
+		saveNewClienttoFile(c);
+		cout << "Client added successfully.\n";
+		this_thread::sleep_for(chrono::seconds(4));
+	}
+	Client* searchClient(int id) {
+		for (auto& i : Client::clients) {
+			if (i.first == id)
+				return &i.second;
+		}
+		return nullptr;
+	}
+	void listClient() {
+		for (auto& i : Client::clients) {
+			i.second.displayCleintInfo();
+			cout << "\n----------------------\n\n";
+		}
+	}
+	void editClient(int id, string name, string password, double balance) {
+		Client* c = searchClient(id);
+		if (c == nullptr) return;
+
+		if (name != "-1" && name != "-2") c->setName(name);                           //'-2'  Cancel option / '-1' so many rong input
+		else if (password != "-1" && password != "-2") c->setPassword(password);
+		else if (balance != -1 && balance != -2) c->setBalance(balance);
+		else return;
+	}
+
+
+
+
+
+	//move  this methods to  EmployeeManager class  phase 3
+	int getNewClientIDfromFile(); // .ccp
 	Client *getClientInfo() {
 		int id, count{};
 		string name, password;
@@ -135,33 +167,4 @@ public:
 		cout << "Balance: " << balance << " " << c->getCurrency() << endl << endl;
 		return c;
 	}
-
-	void addClient(Client& c) {
-		Client::clients.insert({ c.getID(),c });
-		saveNewClienttoFile(c);
-		cout << "Client added successfully.\n";
-		this_thread::sleep_for(chrono::seconds(4));
-	}
-	Client* searchClient(int id) {
-		for(auto& i :Client::clients) {
-			if (i.first == id)
-				return &i.second;
-		}
-		return nullptr;
-	}
-	void listClient() {
-		for (auto& i : Client::clients) {
-			i.second.displayCleintInfo();
-			cout << "\n----------------------\n\n";
-		}
-	}
-
-	void editClient(int id, string name, string password, double balance){
-		Client* c = searchClient(id);
-
-		
-		
-	}
-
-
 };
