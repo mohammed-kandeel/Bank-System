@@ -5,23 +5,24 @@ using namespace std;
 
 class Validation{
 public:
-	static bool is_valid_name(string name) {
+	static bool is_valid_name(const string& name) {
 		if (!(name.size() >= 5 && name.size() <= 20))
 			return false;
-
-		for (auto i : name) {
-			if (!((i >= 'a' && i <= 'z') || (i >= 'A' && i <= 'Z') || (i == ' ')))
+		if (isspace(name.front()) || isspace(name.back()))
+			return false;
+		for (char i : name) {
+			if (!(isalpha(i) || isspace(i)))
 				return false;
 		}
 		return true;
 	}
-	static bool is_valid_password(string password) {
+	static bool is_valid_password(const string& password) {
 		return(password.size() >= 8 && password.size() <= 20);
 	}
-	static bool is_min_balance(double amount) {
+	static bool is_min_balance(const double& amount) {
 		return (amount >= 1500);
 	}
-	static bool is_min_salary(double amount) {
+	static bool is_min_salary(const double& amount) {
 		return (amount >= 5000);
 	}
 };
