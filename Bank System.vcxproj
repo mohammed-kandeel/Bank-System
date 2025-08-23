@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Account.cpp" />
     <ClCompile Include="Admin.cpp" />
     <ClCompile Include="Bank System.cpp" />
     <ClCompile Include="Client.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="Validation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Account.h" />
     <ClInclude Include="Admin.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="DataSourceInterface.h" />
