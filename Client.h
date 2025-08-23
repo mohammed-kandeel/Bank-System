@@ -1,75 +1,112 @@
 #pragma once
 #include "Person.h"
+#include "Account.h"
 #include <map>
 
 class Client :public Person {
 private:
 	//atts
-	double balance;
-	string currency;
-	
+	Account EGP;
+	Account USD;
+	bool hasUSD;
 public:
 	//Data
 	static map<int, Client> clients;
-	//bool operator<(const Client& c) const {  // This operator is required in set to compare clients and sort data
-	//	return this->id < c.id;
-	//}
-	//bool operator=(const Client& c) const {  // This operator is required in set to compare clients
-	//	return this->id == c.id;
-	//}
 	//cons
 	Client(){
-		this->balance = 0.0;
-		this->currency = "EG";
+		hasUSD = false;
 	}
-	Client(int id, string name, string password, double balance) : Person(id, name, password){
-		setBalance(balance);
-		this->currency = "EG";
+	Client(int id, string name, string password, double balance) : Person(id, name, password),EGP(balance,"EGP") {
+		hasUSD = false;
+	}
+	Client(int id, string name, string password, double balanceEGP,bool hasUSD, double balanceUSD) : Person(id, name, password), EGP(balanceEGP, "EGP") {
+		this->hasUSD = hasUSD;
+		if (hasUSD) {
+			USD.setBalance(balanceUSD);
+			USD.setCurrency("USD");
+		}
 	}
 	//des
 	~Client(){}
 	//gets
-	double getBalance() {
-		return balance;
+	double getBalance(string accountType) {
+		if (accountType == "EGP")
+			return EGP.getBalance();
+		else if (accountType == "USD" && hasUSD)
+			return USD.getBalance();
+		else return 0.0;
 	}
-	string getCurrency() {
-		return currency;
+	string getCurrency(string accountType) {
+		if (accountType == "EGP")
+			return EGP.getCurrency();
+		else if (accountType == "USD" && hasUSD)
+			return USD.getCurrency();
+		else return "N/A";
+	}
+	//key
+	bool hasUSDAccount() {
+		return hasUSD;
 	}
 	//sets
-	void setBalance(double balance) {
-		if (Validation::is_min_balance(balance))
-			this->balance = balance;
-		else cout << "Balance must be >= 1500\n";
+	void setBalance(double balance, string accountType) {
+		if (accountType == "EGP")
+			EGP.setBalance(balance);
+		else if (accountType == "USD" && hasUSD)
+			USD.setBalance(balance);
 	}
 	//meths
-	void deposit(double amount) {
-		balance += amount;
+	void deposit(double amount, string accountType) {
+		if (accountType == "EGP")
+			EGP.deposit(amount);
+		else if (accountType == "USD" && hasUSD)
+			USD.deposit(amount);
+		else cout << "No USD account available.\n";
 	}
-	void withDraw(double amount) {
-		if (amount <= balance ) {
-			balance -= amount;
-		}
-		else cout << "\nInvalid Amount\n";
+	void withDraw(double amount, string accountType) {
+		if (accountType == "EGP")
+			EGP.withDraw(amount);
+		else if (accountType == "USD" && hasUSD)
+			USD.withDraw(amount);
+		else cout << "No USD account available.\n";
 	}
-	void transFerTo(double amount, Client& recipient) {
+	void transFerTo(double amount, Client& recipient, string accountType) {
 		if (this->id == recipient.id) {
 			cout << "Cannot transfer to your own account.\n";
 			return;
 		}
-		if (amount <= balance) {
-			withDraw(amount);
-			recipient.deposit(amount);
-			cout << "Transfer successful! " << amount << " has been transferred to " << recipient.name << ".\n";
+		if (accountType == "EGP") {
+			if (amount <= EGP.getBalance()) {
+				withDraw(amount, "EGP");
+				recipient.deposit(amount, "EGP");
+				cout << "Transfer successful! " << amount << " EGP has been transferred to " << recipient.name << ".\n";
+			}
+			else
+				cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
+		}
+		else if (accountType == "USD" && hasUSD && recipient.hasUSDAccount()) {
+			if (amount <= USD.getBalance()) {
+				withDraw(amount, "USD");
+				recipient.deposit(amount, "USD");
+				cout << "Transfer successful! " << amount << " USD has been transferred to " << recipient.name << ".\n";
+			}
+			else
+				cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
 		}
 		else
-			cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
+			cout << "You don't have a USD account.\n";
 	}
-	bool checkAvailableBalance(double amount) {
-		return balance >= amount;
+	bool checkAvailableBalance(double amount, string accountType) {
+		if (accountType == "EGP")
+			return EGP.checkAvailableBalance(amount);
+		else if (accountType == "USD" && hasUSD)
+			return USD.checkAvailableBalance(amount);
+		else return false;
 	}
-	void displayCleintInfo() {
+	void displayClientInfo() {
 		Person::displayPersonInfo();
-		cout << "Balance: " << balance << " " << currency << endl;
+		cout << "Balance: " << EGP.getBalance() << " " << EGP.getCurrency() << endl;
+		if(hasUSD)
+			cout << "Balance: " << USD.getBalance() << " " << USD.getCurrency() << endl;
 	}
 
 
@@ -79,38 +116,38 @@ public:
 
 
 	// instapay/vodafonecash
-	void Ewallet(string mobile_number, double amount, string otp, string user_otp)
-	{
-		if (amount > balance)
-		{
-			cout << "invaild amount \n";
-		}
-		if (otp != user_otp)
-		{
-			cout << "wrong otp \n";
-		}
-		else
-		{
-			balance -= amount;
-			cout << "withdrawal from " << mobile_number << " was successful \n";
-		}
-	}
-	// ?? ???? ?????
-	void receipt()
-	{
-		char choice;
-		cin >> choice;
-		cin.ignore();
-		cout << "do u want a receipt? (save the environment) ";
-		// ?????? ????? ?? ??? ??
-		if (choice == 'y')
-		{
-			cout << "printing receipt... \n";
-		}
-		else
-		{
-			cout << "transaction dn without receipt \n";
-		}
-	}
+	//void Ewallet(string mobile_number, double amount, string otp, string user_otp)
+	//{
+	//	if (amount > balance)
+	//	{
+	//		cout << "invaild amount \n";
+	//	}
+	//	if (otp != user_otp)
+	//	{
+	//		cout << "wrong otp \n";
+	//	}
+	//	else
+	//	{
+	//		balance -= amount;
+	//		cout << "withdrawal from " << mobile_number << " was successful \n";
+	//	}
+	//}
+	//// ?? ???? ?????
+	//void receipt()
+	//{
+	//	char choice;
+	//	cin >> choice;
+	//	cin.ignore();
+	//	cout << "do u want a receipt? (save the environment) ";
+	//	// ?????? ????? ?? ??? ??
+	//	if (choice == 'y')
+	//	{
+	//		cout << "printing receipt... \n";
+	//	}
+	//	else
+	//	{
+	//		cout << "transaction dn without receipt \n";
+	//	}
+	//}
 };
 

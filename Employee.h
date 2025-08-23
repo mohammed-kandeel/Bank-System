@@ -66,17 +66,17 @@ public:
 	}
 	void listClient() {
 		for (auto& i : Client::clients) {
-			i.second.displayCleintInfo();
+			i.second.displayClientInfo();
 			cout << "\n----------------------\n\n";
 		}
 	}
-	void editClient(int id, string name, string password, double balance) {
+	void editClient(int id, string name, string password, double balance, string accountType) {
 		Client* c = searchClient(id);
 		if (c == nullptr) return;
 
 		if (name != "-1" && name != "-2") c->setName(name);                           //'-2'  Cancel option / '-1' so many rong input
 		else if (password != "-1" && password != "-2") c->setPassword(password);
-		else if (balance != -1 && balance != -2) c->setBalance(balance);
+		else if (balance != -1 && balance != -2) c->setBalance(balance, accountType);
 		else return;
 	}
 
@@ -165,7 +165,7 @@ public:
 		cout << "ID: " << id << endl;
 		cout << "Name: " << name << endl;
 		cout << "Password: " << password << endl;
-		cout << "Balance: " << balance << " " << c->getCurrency() << endl << endl;
+		//cout << "Balance: " << balance << " " << c->getCurrency() << endl << endl;
 		return c;
 	}
 };

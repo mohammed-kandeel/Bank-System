@@ -11,7 +11,7 @@ public:
 		this->balance = 0.0;
 	}
 	Account(double balance, string currency) {
-		this->balance = balance;
+		setBalance(balance);
 		this->currency = currency;
 	}
 	//gets
@@ -32,13 +32,17 @@ public:
 	}
 	//meths
 	void deposit(double amount) {
-		balance += amount;
+		if (amount >= 0) {
+			balance += amount;
+		}
+		else 
+			cout << "Deposit amount must be positive.\n";
 	}
 	void withDraw(double amount) {
-		if (amount <= balance) {
+		if (amount > 0 && amount <= balance) {
 			balance -= amount;
 		}
-		else cout << "\nInvalid Amount\n";
+		else cout << "Invalid withdrawal amount.\n";
 	}
 	bool checkAvailableBalance(double amount) {
 		return balance >= amount;
