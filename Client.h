@@ -1,7 +1,19 @@
 #pragma once
 #include "Person.h"
 #include "Account.h"
+#include "CreditCard.h"
+#include "DebitCard.h"
 #include <map>
+
+class AccountCArd {
+public:
+	CreditCard *credit;
+	DebitCard *debit;
+	AccountCArd() {
+		credit = nullptr;
+		debit = nullptr;
+	}
+};
 
 class Client :public Person {
 private:
@@ -9,6 +21,9 @@ private:
 	Account EGP;
 	Account USD;
 	bool hasUSD;
+	map < string, AccountCArd > cards; // <account type , card>   --->   <EGP, credit>
+	string tractionHistory[7];
+	
 public:
 	//Data
 	static map<int, Client> clients;
@@ -55,6 +70,13 @@ public:
 			USD.setBalance(balance);
 	}
 	//meths
+	void displayClientInfo() {
+		Person::displayPersonInfo();
+		cout << "Balance: " << EGP.getBalance() << " " << EGP.getCurrency() << endl;
+		if (hasUSD)
+			cout << "Balance: " << USD.getBalance() << " " << USD.getCurrency() << endl;
+	}
+	//meths account
 	void deposit(double amount, string accountType) {
 		if (accountType == "EGP")
 			EGP.deposit(amount);
@@ -102,13 +124,86 @@ public:
 			return USD.checkAvailableBalance(amount);
 		else return false;
 	}
-	void displayClientInfo() {
-		Person::displayPersonInfo();
-		cout << "Balance: " << EGP.getBalance() << " " << EGP.getCurrency() << endl;
-		if(hasUSD)
-			cout << "Balance: " << USD.getBalance() << " " << USD.getCurrency() << endl;
-	}
 
+
+	//meths DebitCard & CreditCard
+	bool hasDebitCard(string accountType) {
+		auto it = cards.find(accountType);
+		return it != cards.end() && it->second.debit != nullptr;
+	}
+	bool hasCreditCard(string accountType) {
+		auto it = cards.find(accountType);
+		return it != cards.end() && it->second.credit != nullptr;
+	}
+	void addDebitCard(string accountType, int cardId, string expiryDate) {
+		Account* account;
+		if (accountType == "EGP")
+			account = &EGP;
+		else if (accountType == "USD" && hasUSD)
+			account = &USD;
+		else {
+			cout << "Account not found.\n";
+			return;
+		}
+
+		if (hasDebitCard(accountType)) {
+			cout << accountType << " already has a debit card.\n";
+			return;
+		}
+		auto it = cards.find(accountType);
+		it->second.debit = new DebitCard(cardId, expiryDate, account);
+	}
+	void addCreditCard(string accountType, int cardId, string expiryDate, double creditLimit) {
+		Account* account;
+		if (accountType == "EGP")
+			account = &EGP;
+		else if (accountType == "USD" && hasUSD)
+			account = &USD;
+		else {
+			cout << "Account not found.\n";
+			return;
+		}
+
+		if (hasCreditCard(accountType)) {
+			cout << accountType << " already has a debit card.\n";
+			return;
+		}
+		auto it = cards.find(accountType);
+		it->second.credit = new CreditCard(cardId, expiryDate, account, creditLimit);
+	}
+	void useDebitCard(string accountType, double amount, string operation) {
+		if (!hasDebitCard(accountType)) {
+			cout << "No debit card for this account.\n";
+			return;
+		}
+		auto it = cards.find(accountType);
+		if (operation == " ") {
+			//it->second.debit->
+		}
+		else if (operation == " ") {
+			//it->second.debit->
+		}
+		else {
+			cout << "Invalid operation.\n";
+		}
+	}
+	void useCreditCard(string accountType, double amount, string operation) {
+		if (!hasCreditCard(accountType)) {
+			cout << "No debit card for this account.\n";
+			return;
+		}
+		auto it = cards.find(accountType);
+		if (operation == " ") {
+			//it->second.credit->
+		}
+		else if (operation == " ") {
+			//it->second.credit->
+		}
+		else {
+			cout << "Invalid operation.\n";
+		}
+	}
+	
 
 
 
