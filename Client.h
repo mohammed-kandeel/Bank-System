@@ -32,12 +32,7 @@ public:
 	}
 	
 	//des
-	~Client(){
-		for (auto& i : cards) {
-			delete i.second.credit;
-			delete i.second.debit;
-		}
-	}
+	//~Client(){}
 	//gets
 	double getBalance(string accountType) {
 		if (accountType == "EGP")
@@ -74,9 +69,26 @@ public:
 	//meths
 	void displayClientInfo() {
 		Person::displayPersonInfo();
-		cout << "Balance: " << EGP.getBalance() << " " << EGP.getCurrency() << endl;
-		if (hasUSD)
-			cout << "Balance: " << USD.getBalance() << " " << USD.getCurrency() << endl;
+		cout << "\nEgyptian account:\n";
+		cout << "   ->Balance: " << EGP.getBalance() << " " << EGP.getCurrency() << endl;
+		if (hasDebitCard("EGP")) 
+			cout << "   ->Has debit card\n";
+		if (hasCreditCard("EGP")) {
+			cout << "   ->Has credit card\n";
+			cout << "   ->Credit Limit: " << getCreditLimit("EGP") << " " << EGP.getCurrency() << endl;
+			cout << "   ->Credit used: " << getCreditUsed("EGP") << " " << EGP.getCurrency() << endl;
+		}
+		if (hasUSD) {
+			cout << "\nDollar account:\n";
+			cout << "   ->Balance: " << USD.getBalance() << " " << USD.getCurrency() << endl;
+			if (hasDebitCard("USD"))
+				cout << "   ->Has debit card\n";
+			if (hasCreditCard("USD")) {
+				cout << "   ->Has credit card\n";
+				cout << "   ->Credit Limit: " << getCreditLimit("USD") << " " << USD.getCurrency() << endl;
+				cout << "   ->Credit used: " << getCreditUsed("USD") << " " << USD.getCurrency() << endl;
+			}
+		}
 	}
 
 	//meths account
@@ -178,9 +190,8 @@ public:
 			return 0.0; //No Credit card
 		return it->second.credit->getUsedCredit();
 	}
-
 	void addDebitCard(string accountType, int cardId, string expiryDate) {
-		Account* account;
+		Account* account = nullptr;
 		if (accountType == "EGP")
 			account = &EGP;
 		else if (accountType == "USD" && hasUSD)
@@ -190,16 +201,11 @@ public:
 			return;
 		}
 
-		auto it = cards.find(accountType);
-		if (it == cards.end()) {
-			cout << "Account type not found\n";
-			return;
-		}
 		if (hasDebitCard(accountType)) {
 			cout << accountType << " already has a debit card.\n";
 			return;
 		}
-		it->second.debit = new DebitCard(cardId, expiryDate, account);
+		cards[accountType].debit = new DebitCard(cardId, expiryDate, account);
 	}
 	void addCreditCard(string accountType, int cardId, string expiryDate, double creditLimit) {
 		Account* account;
@@ -211,16 +217,12 @@ public:
 			cout << "Account not found.\n";
 			return;
 		}
-		auto it = cards.find(accountType);
-		if (it == cards.end()) {
-			cout << "Account type not found\n";
-			return;
-		}
+
 		if (hasCreditCard(accountType)) {
-			cout << accountType << " already has a debit card.\n";
+			cout << accountType << " already has a credit card.\n";
 			return;
 		}
-		it->second.credit = new CreditCard(cardId, expiryDate, account, creditLimit);
+		cards[accountType].credit = new CreditCard(cardId, expiryDate, account, creditLimit);
 	}
 	void useDebitCard(string accountType, double amount, string operation) {
 		if (!hasDebitCard(accountType)) {

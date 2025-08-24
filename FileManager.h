@@ -16,6 +16,6 @@ public:
 
 	//remove all data from the files
 	static void removeAllClients();    //.ccp
-	static void removeAllEmployee();  //.ccp
+	static void removeAllEmployees();  //.ccp
 	static void removeAllAdmins();   //.ccp
 };

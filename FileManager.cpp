@@ -26,7 +26,7 @@ void FileManager::getAllAdmins() {
 void FileManager::removeAllClients() {
 	FilesHelper::clearFile("Client.txt", "LastClientId.txt");
 }
-void FileManager::removeAllEmployee() {
+void FileManager::removeAllEmployees() {
 	FilesHelper::clearFile("Employee.txt", "LastEmployeeId.txt");
 }
 void FileManager::removeAllAdmins() {

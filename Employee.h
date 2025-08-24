@@ -80,10 +80,6 @@ public:
 		else return;
 	}
 
-
-
-
-
 	//move  this methods to  EmployeeManager class  phase 3
 	int getNewClientIDfromFile(); // .ccp
 	Client *getClientInfo() {

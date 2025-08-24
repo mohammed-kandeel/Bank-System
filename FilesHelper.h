@@ -36,7 +36,7 @@ public:
 	static void saveEmployee(string fileName, string lastIdFile, Employee& e) {
 		int id = getLastId(lastIdFile) + 1;
 		// (id, name, password, salary ,currency)
-		string line = to_string(e.getID()) + "&" + e.getName() + "&" + e.getPassword() + "&" + to_string(e.getSalary()) + "&" + e.getCurrency();
+		string line = to_string(id) + "&" + e.getName() + "&" + e.getPassword() + "&" + to_string(e.getSalary()) + "&" + e.getCurrency();
 
 		ofstream setEmployee(fileName, ios::app);
 		setEmployee << line << endl;
@@ -71,7 +71,7 @@ public:
 
 		while (getline(file, line)) {  //Continue reading until reaching the end of the file (EOF), at which point it returns false.
 			Admin a = Parser::parseToAdmin(line);
-			Admin::admin.insert({ a.getID(),a });
+			Admin::admins.insert({ a.getID(),a });
 		}
 		file.close();
 	}

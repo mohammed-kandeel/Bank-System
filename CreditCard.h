@@ -29,6 +29,11 @@ public:
     }
     //meths
     void deposit(double amount) {
+        if (account == nullptr) {
+            cout << "No linked account!\n";
+            return;
+        }
+
         if (!isExpired("01-2025")) {
             if (usedCredit > 0) {
                 usedCredit -= amount;
@@ -48,10 +53,15 @@ public:
         }
     }
     void withdraw(double amount) {
+        if (account == nullptr) {
+            cout << "No linked account!\n";
+            return;
+        }
+
         if (!isExpired("01-2025")) {
             if (usedCredit + amount <= creditLimit) {
                 usedCredit += amount;
-                cout << "Credit used: " << usedCredit << " / " << creditLimit << endl;
+                //cout << "Credit used: " << usedCredit << " / " << creditLimit << endl;
             }
             else {
                 cout << "Credit limit exceeded!\n";
