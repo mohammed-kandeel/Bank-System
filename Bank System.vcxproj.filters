@@ -48,6 +48,18 @@
     <ClCompile Include="Account.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PaymentMethod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DebitCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Person.h">
@@ -78,6 +90,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Account.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PaymentMethod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebitCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AccountCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

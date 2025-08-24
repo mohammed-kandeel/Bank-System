@@ -17,7 +17,16 @@ public:
 	static void saveClient(Client& c) {
 		int id = getLastId("LastClientId.txt") + 1;
 		// (id, name, password, balance ,currency)
-		string line = to_string(id) + "&" + c.getName() + "&" + c.getPassword() + "&" + to_string(c.getBalance()) + "&" + c.getCurrency();
+		string line = to_string(id) + "&" + c.getName() + "&" + c.getPassword() + "&" + to_string(c.getBalance("EGP"))
+			+ "&" + to_string(c.hasUSDAccount()) + "&" + to_string(c.getBalance("USD"))
+
+			//	( hasDebitCard, cardId, expiryDat)
+			+ "&" + to_string(c.hasDebitCard("EGP")) + "&" + to_string(c.getIdCard("EGP", "debit")) + "&" + c.getExpiryDateCard("EGP", "debit")
+			+ "&" + to_string(c.hasDebitCard("USD")) + "&" + to_string(c.getIdCard("USD", "debit")) + "&" + c.getExpiryDateCard("USD", "debit")
+
+			//	(hasCreditCard, cardId, expiryDate, creditLimit, amountUse)
+			+ "&" + to_string(c.hasCreditCard("EGP")) + "&" + to_string(c.getIdCard("EGP", "credit")) + "&" + c.getExpiryDateCard("EGP", "credit") + "&" + to_string(c.getCreditLimit("EGP")) + "&" + to_string(c.getCreditUsed("EGP"))
+			+ "&" + to_string(c.hasCreditCard("USD")) + "&" + to_string(c.getIdCard("USD", "credit")) + "&" + c.getExpiryDateCard("USD", "credit") + "&" + to_string(c.getCreditLimit("USD")) + "&" + to_string(c.getCreditUsed("USD"));
 
 		ofstream setClient("Client.txt", ios::app);
 		setClient << line << endl;

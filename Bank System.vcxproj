@@ -128,26 +128,34 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Account.cpp" />
+    <ClCompile Include="AccountCard.cpp" />
     <ClCompile Include="Admin.cpp" />
     <ClCompile Include="Bank System.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="CreditCard.cpp" />
     <ClCompile Include="DataSourceInterface.cpp" />
+    <ClCompile Include="DebitCard.cpp" />
     <ClCompile Include="Employee.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FilesHelper.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PaymentMethod.cpp" />
     <ClCompile Include="Person.cpp" />
     <ClCompile Include="Validation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Account.h" />
+    <ClInclude Include="AccountCard.h" />
     <ClInclude Include="Admin.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="CreditCard.h" />
     <ClInclude Include="DataSourceInterface.h" />
+    <ClInclude Include="DebitCard.h" />
     <ClInclude Include="Employee.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FilesHelper.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="PaymentMethod.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="Validation.h" />
   </ItemGroup>
