@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"Validation.h"
 class Account{
 private:
@@ -48,3 +48,110 @@ public:
 		return balance >= amount;
 	}
 };
+
+
+
+
+
+
+// ================== PaymentMethod ==================
+#include<iostream>
+#include<string>
+using namespace std;
+#pragma once
+class PaymentMethod {
+protected:
+    int id;
+    string expiryDate;
+    Account* account;
+public:
+    PaymentMethod(int id, string expiryDate, Account* account) {
+        this->id = id;
+        this->expiryDate = expiryDate;
+        this->Account = account;
+    }
+
+    // دوال pure virtual
+    virtual void deposit(double amount) = 0;
+    virtual void withdraw(double amount) = 0;
+
+    // check expiry
+    bool isExpired(string currentDate) {
+        return currentDate > expiryDate;
+    }
+
+    virtual ~PaymentMethod() {}
+};
+
+// ================== DebitCard ==================
+#include<iostream>
+#include<string>
+#include<PaymentMethod.h>
+#pragma once
+class DebitCard : public PaymentMethod {
+public:
+    DebitCard(int id, string expiryDate, Account* account)
+        : PaymentMethod(id, expiryDate, account) {
+    }
+
+    void deposit(double amount) {
+        if (!isExpired("01/2025"))
+            account->deposit(amount);
+        else
+            cout << "Debit card expired!\n";
+    }
+
+    void withdraw(double amount) {
+        if (!isExpired("01/2025"))
+            account->withdraw(amount);
+        else
+            cout << "Debit card expired!\n";
+    }
+};
+
+
+
+// ================== CreditCard ==================
+#include<iostream>
+#include<string>
+#include<PaymentMethod.h>
+#pragma once
+class CreditCard : public PaymentMethod {
+private:
+    double creditLimit;
+    double usedCredit;
+public:
+    CreditCard(int id, string expiryDate, Account* account, double creditLimit)
+        : PaymentMethod(id, expiryDate, account), creditLimit(creditLimit), usedCredit(0) {
+    }
+
+    void deposit(double amount) {
+        if (!isExpired("01/2025")) {
+            usedCredit -= amount;
+            if (usedCredit < 0) {
+                account->deposit(-usedCredit); // 
+                usedCredit = 0;
+            }
+            cout << "Credit payment done!\n";
+        }
+        else {
+            cout << "Credit card expired!\n";
+        }
+    }
+
+    void withdraw(double amount) {
+        if (!isExpired("01/2025")) {
+            if (usedCredit + amount <= creditLimit) {
+                usedCredit += amount;
+                cout << "Credit used: " << usedCredit << "/" << creditLimit << endl;
+            }
+            else {
+                cout << "Credit limit exceeded!\n";
+            }
+        }
+        else {
+            cout << "Credit card expired!\n";
+        }
+    }
+};
+
