@@ -20,6 +20,9 @@ public:
     void setCreditLimit(double creditLimit) {
         this->creditLimit = creditLimit;
     }
+    void setusedCredit(double usedCredit) {
+        this->usedCredit = usedCredit;
+    }
     //gets
     double getCreditLimit() {
         return creditLimit;
@@ -33,7 +36,6 @@ public:
             cout << "No linked account!\n";
             return;
         }
-
         if (!isExpired("01-2025")) {
             if (usedCredit > 0) {
                 usedCredit -= amount;
@@ -61,7 +63,7 @@ public:
         if (!isExpired("01-2025")) {
             if (usedCredit + amount <= creditLimit) {
                 usedCredit += amount;
-                //cout << "Credit used: " << usedCredit << " / " << creditLimit << endl;
+                cout << "Credit used: " << usedCredit << " / " << creditLimit << endl;
             }
             else {
                 cout << "Credit limit exceeded!\n";

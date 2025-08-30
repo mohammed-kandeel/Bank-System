@@ -19,7 +19,18 @@ public:
         this->expiryDate = expiryDate;
         this->account = account;
     }
-    //get
+    //keys
+    bool isExpired(string currentDate) {
+        return currentDate >= expiryDate;
+    }
+    //sets
+    void setIdCard(int id) {
+        this->id = id;
+    }
+    void setExpiryDateCard(string idexpiryDate){
+        this->expiryDate = expiryDate;
+    }
+    //gets
     int getIdCard() {
         return id;
     }
@@ -27,11 +38,7 @@ public:
         return expiryDate;
     }
     //meths
-    bool isExpired(string currentDate) {
-        return currentDate >= expiryDate;
-    }
     virtual void deposit(double amount) = 0;
     virtual void withdraw(double amount) = 0;
-    virtual ~PaymentMethod() {}
 };
 

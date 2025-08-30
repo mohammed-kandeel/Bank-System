@@ -27,6 +27,11 @@ public:
 			this->balance = balance;
 		else cout << "Balance must be >= 1500\n";
 	}
+	void setBalance(double balance, double balanceFile) {
+		if (Validation::is_min_balance(balance))
+			this->balance = balanceFile;
+		else cout << "Balance must be >= 1500\n";
+	}
 	void setCurrency(string currency) {
 		this->currency = currency;
 	}

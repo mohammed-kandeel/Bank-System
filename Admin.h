@@ -1,18 +1,15 @@
 ﻿#pragma once
 #include "Employee.h"
-
 class FileManager;
 
 class Admin :public Employee {
 public:
-	//Data
+	//All admins Data <ID, admin> 
 	static map<int, Admin>admins;
 	//cons
 	Admin(){}
 	Admin(int id, string name, string password, double salary) : Employee(id, name, password, salary) {}
-	//des
-	//~Admin(){}
-
+	//meths
 	void saveNewEmployeeToFile(Employee& employee);  //.ccp
 	void addEmployee(Employee& employee) {
 		Employee::employees.insert({ employee.getID(),employee });

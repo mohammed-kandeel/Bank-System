@@ -15,23 +15,24 @@ public:
 
 	//save one person to file
 	static void saveClient(Client& c) {
-		int id = getLastId("LastClientId.txt") + 1;
+		//int id = getLastId("LastClientId.txt") + 1;
+		
 		// (id, name, password, balance ,currency)
-		string line = to_string(id) + "&" + c.getName() + "&" + c.getPassword() + "&" + to_string(c.getBalance("EGP"))
-			+ "&" + to_string(c.hasUSDAccount()) + "&" + to_string(c.getBalance("USD"))
+		string line = to_string(c.getID()) + "&" + c.getName() + "&" + c.getPassword() + "&" + to_string(c.getBalance(AccountType::EGP))
+			+ "&" + to_string(c.hasUSDAccount()) + "&" + to_string(c.getBalance(AccountType::USD))
 
 			//	( hasDebitCard, cardId, expiryDat)
-			+ "&" + to_string(c.hasDebitCard("EGP")) + "&" + to_string(c.getIdCard("EGP", "debit")) + "&" + c.getExpiryDateCard("EGP", "debit")
-			+ "&" + to_string(c.hasDebitCard("USD")) + "&" + to_string(c.getIdCard("USD", "debit")) + "&" + c.getExpiryDateCard("USD", "debit")
+			+ "&" + to_string(c.hasDebitCard(AccountType::EGP)) + "&" + to_string(c.getIdCard(AccountType::EGP,CardType::Debit)) + "&" + c.getExpiryDateCard(AccountType::EGP, CardType::Debit)
+			+ "&" + to_string(c.hasDebitCard(AccountType::USD)) + "&" + to_string(c.getIdCard(AccountType::USD, CardType::Debit)) + "&" + c.getExpiryDateCard(AccountType::USD, CardType::Debit)
 
 			//	(hasCreditCard, cardId, expiryDate, creditLimit, amountUse)
-			+ "&" + to_string(c.hasCreditCard("EGP")) + "&" + to_string(c.getIdCard("EGP", "credit")) + "&" + c.getExpiryDateCard("EGP", "credit") + "&" + to_string(c.getCreditLimit("EGP")) + "&" + to_string(c.getCreditUsed("EGP"))
-			+ "&" + to_string(c.hasCreditCard("USD")) + "&" + to_string(c.getIdCard("USD", "credit")) + "&" + c.getExpiryDateCard("USD", "credit") + "&" + to_string(c.getCreditLimit("USD")) + "&" + to_string(c.getCreditUsed("USD"));
+			+ "&" + to_string(c.hasCreditCard(AccountType::EGP)) + "&" + to_string(c.getIdCard(AccountType::EGP, CardType::Credit)) + "&" + c.getExpiryDateCard(AccountType::EGP, CardType::Credit) + "&" + to_string(c.getCreditLimit(AccountType::EGP)) + "&" + to_string(c.getCreditUsed(AccountType::EGP))
+			+ "&" + to_string(c.hasCreditCard(AccountType::USD)) + "&" + to_string(c.getIdCard(AccountType::USD, CardType::Credit)) + "&" + c.getExpiryDateCard(AccountType::USD, CardType::Credit) + "&" + to_string(c.getCreditLimit(AccountType::USD)) + "&" + to_string(c.getCreditUsed(AccountType::USD));
 
 		ofstream setClient("Client.txt", ios::app);
 		setClient << line << endl;
 		setClient.close();
-		saveLastId("LastClientId.txt", id);
+		saveLastId("LastClientId.txt", c.getID());
 	}
 	static void saveEmployee(string fileName, string lastIdFile, Employee& e) {
 		int id = getLastId(lastIdFile) + 1;

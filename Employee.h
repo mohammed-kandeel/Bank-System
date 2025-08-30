@@ -14,11 +14,8 @@ protected:
 	double salary;
 	string currency;
 public:
-	//Data
+	//All employees Data <ID, employee> 
 	static map<int,Employee>employees;
-	//bool operator<(const Employee& e) const {  // This operator is required in set to compare clients and sort data
-	//	return this->id < e.id;
-	//}
 	//cons
 	Employee(){
 		this->salary = 0.0;
@@ -49,14 +46,22 @@ public:
 		Person::displayPersonInfo();
 		cout << "Salary: " << salary << " " << currency << endl;
 	}
-	void saveNewClienttoFile(Client& c); // .ccp
 
+	void saveNewClienttoFile(Client& c); // .ccp
 	void addClient(Client& client) {
 		Client::clients.insert({ client.getID(),client });
 		saveNewClienttoFile(client);
 		cout << "Client added successfully.\n";
 		this_thread::sleep_for(chrono::seconds(4));
 	}
+
+	void addDebitCard(Client& client, AccountType accountType, int cardId, string expiryDate) {
+		client.setNewCard(accountType, CardType::Debit, cardId, expiryDate, 0);
+	}
+	void addCreditCard(Client& client, AccountType accountType, int cardId, string expiryDate, double creditLimit) {
+		client.setNewCard(accountType, CardType::Credit, cardId, expiryDate, creditLimit);
+	}
+
 	Client* searchClient(int id) {
 		for (auto& i : Client::clients) {
 			if (i.first == id)
@@ -70,7 +75,7 @@ public:
 			cout << "\n----------------------\n\n";
 		}
 	}
-	void editClient(int id, string name, string password, double balance, string accountType) {
+	void editClient(int id, string name, string password, double balance, AccountType accountType) {
 		Client* c = searchClient(id);
 		if (c == nullptr) return;
 
@@ -80,6 +85,7 @@ public:
 		else return;
 	}
 
+	
 	//move  this methods to  EmployeeManager class  phase 3
 	int getNewClientIDfromFile(); // .ccp
 	Client *getClientInfo() {
