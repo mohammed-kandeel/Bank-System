@@ -5,10 +5,10 @@ void FileManager::addClient(Client& c) {
 	FilesHelper::saveClient(c);
 }
 void FileManager::addEmployee(Employee& e) {
-	FilesHelper::saveEmployee("Employee.txt", "LastEmployeeId.txt", e);
+	FilesHelper::saveEmployee("Employees.txt", "LastEmployeeId.txt", e);
 }
 void FileManager::addAdmin(Admin& a) {
-	FilesHelper::saveEmployee("Admin.txt", "LastAdminId.txt", a);
+	FilesHelper::saveEmployee("Admins.txt", "LastAdminId.txt", a);
 }
 
 // get all persons data from the files
@@ -24,11 +24,11 @@ void FileManager::getAllAdmins() {
 
 //remove all data from the files
 void FileManager::removeAllClients() {
-	FilesHelper::clearFile("Client.txt", "LastClientId.txt");
+	FilesHelper::clearFile("Clients.txt", "LastClientId.txt");
 }
 void FileManager::removeAllEmployees() {
-	FilesHelper::clearFile("Employee.txt", "LastEmployeeId.txt");
+	FilesHelper::clearFile("Employees.txt", "LastEmployeeId.txt");
 }
 void FileManager::removeAllAdmins() {
-	FilesHelper::clearFile("Admin.txt", "LastAdminId.txt");
+	FilesHelper::clearFile("Admins.txt", "LastAdminId.txt");
 }

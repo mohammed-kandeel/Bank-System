@@ -1,11 +1,15 @@
 #pragma once
 #include "Person.h"
+#include <vector>
+#include <string>
 #include "Account.h"
 #include "AccountCard.h"
 #include <map>
 
 enum class CardType { Credit, Debit };
 enum class AccountType { EGP, USD };
+enum class Operation { Deposit, Withdraw };
+
 
 class Client :public Person {
 private:
@@ -14,7 +18,8 @@ private:
 	Account USD;
 	bool hasUSD;
 	map < AccountType, AccountCard > cards; // <account type , card>   --->   <EGP, credit>
-	//string tractionHistory[7];
+	vector<string>transactionHistory; // size (7)
+	int maxTransactions = 7;
 	
 	//private meths
 	string accountTypeToString(AccountType accountType) {
@@ -24,6 +29,13 @@ private:
 		}
 		return "unKnown";
 	}
+	Account& accountTypeToAccount(AccountType accountType) {
+		switch (accountType) {
+			case AccountType::EGP:return EGP;
+			case AccountType::USD:return USD;
+			default: throw invalid_argument("Invalid account type");
+		}
+	}
 	void setNewDebitCard(AccountType accountType, int cardId, string expiryDate, Account* account) {
 		if (!hasDebitCard(accountType) && ((accountType == AccountType::EGP) || (accountType == AccountType::USD && hasUSDAccount())))
 			cards[accountType].debit = new DebitCard(cardId, expiryDate, account);
@@ -32,9 +44,16 @@ private:
 		if (!hasCreditCard(accountType) && ((accountType == AccountType::EGP) || (accountType == AccountType::USD && hasUSDAccount())))
 			cards[accountType].credit = new CreditCard(cardId, expiryDate, account, creditLimit);
 	}
+
 public:
-	//All clients Data <ID, client> 
-	static map<int, Client> clients;
+	//All clients Data <ID, *pointer> 
+	static map<int, Client*> clients;
+	static void removeAllClients() {
+		for (auto& i : Client::clients) {
+			delete i.second;
+		}
+		Client::clients.clear();
+	}
 	//cons
 	Client(){
 		hasUSD = false;
@@ -49,7 +68,6 @@ public:
 			USD.setCurrency("USD");
 		}
 	}
-	
 	//key
 	bool hasUSDAccount() {
 		return hasUSD;
@@ -67,6 +85,13 @@ public:
 			return it != cards.end() && it->second.credit != nullptr;
 		}
 		return false;
+	}
+	bool checkAvailableBalance(double amount, AccountType accountType) {
+		if (accountType == AccountType::EGP)
+			return EGP.checkAvailableBalance(amount);
+		else if (accountType == AccountType::USD && hasUSD)
+			return USD.checkAvailableBalance(amount);
+		else return false;
 	}
 	//gets
 	double getBalance(AccountType accountType) {
@@ -127,6 +152,9 @@ public:
 		else if (accountType == AccountType::USD && hasUSD) return &USD;
 		else return nullptr;
 	}
+	const vector<string>&getTransactionHistory() {
+		return transactionHistory;
+	}
 	//sets
 	void setBalance(double balance, AccountType accountType) {
 		if (accountType == AccountType::EGP){
@@ -166,7 +194,6 @@ public:
 			setNewDebitCard(accountType, cardId, expiryDate, account);
 		}
 		else if (cardType == CardType::Credit) {
-
 			if (hasCreditCard(accountType)) {
 				cout << accountTypeToString(accountType) << " account already have a credit card.\n";
 				return;
@@ -193,8 +220,8 @@ public:
 			cout << "   ->Has debit card\n";
 		if (hasCreditCard(AccountType::EGP)) {
 			cout << "   ->Has credit card\n";
-			cout << "   ->Credit Limit: " << getCreditLimit(AccountType::EGP) << " " << EGP.getCurrency() << endl;
-			cout << "   ->Credit used: " << getCreditUsed(AccountType::EGP) << " " << EGP.getCurrency() << endl;
+			cout << "       ->Credit Limit: " << getCreditLimit(AccountType::EGP) << " " << EGP.getCurrency() << endl;
+			cout << "       ->Credit used: " << getCreditUsed(AccountType::EGP) << " " << EGP.getCurrency() << endl;
 		}
 		if (hasUSD) {
 			cout << "\nDollar account:\n";
@@ -203,100 +230,119 @@ public:
 				cout << "   ->Has debit card\n";
 			if (hasCreditCard(AccountType::USD)) {
 				cout << "   ->Has credit card\n";
-			cout << "   ->Credit Limit: " << getCreditLimit(AccountType::USD) << " " << USD.getCurrency() << endl;
-				cout << "   ->Credit used: " << getCreditUsed(AccountType::USD) << " " << USD.getCurrency() << endl;
+				cout << "      ->Credit Limit: " << getCreditLimit(AccountType::USD) << " " << USD.getCurrency() << endl;
+				cout << "      ->Credit used: " << getCreditUsed(AccountType::USD) << " " << USD.getCurrency() << endl;
 			}
 		}
 	}
+	void displayClientTransactionHistory() {
+		cout << "\nTransaction History:\n";
+		for (auto i : transactionHistory) {
+			cout << "   ->" << i << endl;
+		}
+	}
+	void add_transaction(string Transaction) {
+		if (transactionHistory.size() == maxTransactions)
+			transactionHistory.pop_back();
+		transactionHistory.insert(transactionHistory.begin(), Transaction);
+	}
 	//meths account
 	void deposit(double amount, AccountType accountType) {
-		if (accountType == AccountType::EGP)
+		if (accountType == AccountType::EGP) {
 			EGP.deposit(amount);
-		else if (accountType == AccountType::USD && hasUSD)
+			add_transaction("Deposit: " + to_string(amount) + " " + EGP.getCurrency() + " To EGP Account");
+		}
+		else if (accountType == AccountType::USD && hasUSD) {
 			USD.deposit(amount);
-		else cout << "Invalid account type.\n";
+			add_transaction("Deposit: " + to_string(amount) + " " + USD.getCurrency() + " To USD Account");
+		}
+		else cout << "You don't have a USD account.\n";
+
 	}
-	void withDraw(double amount, AccountType accountType) {
-		if (accountType == AccountType::EGP)
+	void withdraw(double amount, AccountType accountType) {
+		if (accountType == AccountType::EGP) {
 			EGP.withDraw(amount);
-		else if (accountType == AccountType::USD && hasUSD)
+			add_transaction("Withdrawal: " + to_string(amount) + " EGP From EGP Account");
+		}
+		else if (accountType == AccountType::USD && hasUSD) {
 			USD.withDraw(amount);
-		else cout << "Invalid account type.\n";
+			add_transaction("Withdrawal: " + to_string(amount) + " USD From USD Account");
+		}
+		else cout << "You don't have a USD account.\n";
 	}
-	void transFerTo(double amount, Client& recipient, AccountType accountType) {
-		if (this->id == recipient.id) {
+	void transFerTo(double amount, Client* recipient, AccountType accountType) {
+		if (this->id == recipient->id) {
 			cout << "Cannot transfer to your own account.\n";
 			return;
 		}
 		if (accountType == AccountType::EGP) {
 			if (amount <= EGP.getBalance()) {
-				withDraw(amount, AccountType::EGP);
-					recipient.deposit(amount, AccountType::EGP);
-						cout << "Transfer successful! " << amount << " EGP has been transferred to " << recipient.name << ".\n";
+				withdraw(amount, AccountType::EGP);
+				recipient->deposit(amount, AccountType::EGP);
+				cout << "Transfer successful! " << amount << " EGP has been transferred to " << recipient->name << ".\n";
+				add_transaction("Transferred: " + to_string(amount) + " EGP To " + recipient->name + " (From EGP Account)");
+				recipient->add_transaction("Received: " + to_string(amount) + " EGP From " + this->name + " (To EGP Account)");
 			}
-			else
-						cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
-	}
-		else if (accountType == AccountType::USD && hasUSDAccount() && recipient.hasUSDAccount()) {
+			else cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
+		}
+		else if (accountType == AccountType::USD && hasUSDAccount() && recipient->hasUSDAccount()) {
 			if (amount <= USD.getBalance()) {
-				withDraw(amount, AccountType::USD);
-					recipient.deposit(amount, AccountType::USD);
-						cout << "Transfer successful! " << amount << " USD has been transferred to " << recipient.name << ".\n";
+				withdraw(amount, AccountType::USD);
+				recipient->deposit(amount, AccountType::USD);
+				cout << "Transfer successful! " << amount << " USD has been transferred to " << recipient->name << ".\n";
+				add_transaction("Transferred: " + to_string(amount) + " USD To " + recipient->name + " (From USD Account)");
+				recipient->add_transaction("Received: " + to_string(amount) + " USD From " + this->name + " (To USD Account)");
 			}
-			else
-						cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
+			else cout << "Transfer failed. You do not have enough balance to complete this transaction.\n";
 		}
 		else {
-			if (!hasUSDAccount())
-				cout << "You don't have a USD account.\n";
-			else
-				cout << "recipient doesn't have a USD account.\n";
+			if (!hasUSDAccount()) cout << "You don't have a USD account.\n";
+			else cout << "recipient doesn't have a USD account.\n";
 		}
 	}
-	bool checkAvailableBalance(double amount, AccountType accountType) {
-		if (accountType == AccountType::EGP)
-			return EGP.checkAvailableBalance(amount);
-		else if (accountType == AccountType::USD && hasUSD)
-			return USD.checkAvailableBalance(amount);
-		else return false;
-	}
 	//meths DebitCard & CreditCard
-	void useDebitCard(AccountType accountType, double amount, string operation) {
+	void useDebitCard(AccountType accountType, double amount, Operation operation) {
+		if (accountType == AccountType::USD && !hasUSD) {
+			cout << "You don't have a USD account.\n";
+			return;
+		}
 		if (!hasDebitCard(accountType)) {
 			cout << "No debit card for this account.\n";
 			return;
 		}
 		auto it = cards.find(accountType);
-		if (operation == "deposit") {
+		if (operation == Operation::Deposit) {
 			it->second.debit->deposit(amount);
+			add_transaction("Deposit By Debit Card In: " + accountTypeToString(accountType) + " Account (" + to_string(amount) + " " + accountTypeToAccount(accountType).getCurrency() + " )");
 		}
-		else if (operation == "withdraw") {
+		else if (operation == Operation::Withdraw) {
 			it->second.debit->withdraw(amount);
+			add_transaction("Debit Card Withdrawal: " + to_string(amount) + " " + accountTypeToAccount(accountType).getCurrency() + " From " + accountTypeToString(accountType) + " Account");
 		}
-		else {
-			cout << "Invalid operation.\n";
-		}
+		else cout << "Invalid operation.\n";
 	}
-	void useCreditCard(AccountType accountType, double amount, string operation) {
+	void useCreditCard(AccountType accountType, double amount, Operation operation) {
+		if (accountType == AccountType::USD && !hasUSD) {
+			cout << "You don't have a USD account.\n";
+			return;
+		}
 		if (!hasCreditCard(accountType)) {
 			cout << "No credit card for this account.\n";
 			return;
 		}
 		auto it = cards.find(accountType);
-		if (operation == "deposit") {
+		if (operation == Operation::Deposit && it->second.credit != nullptr) {
 			it->second.credit->deposit(amount);
+			add_transaction("Deposit By Credit Card In: " + accountTypeToString(accountType) + " Account (" + to_string(amount) + " " + accountTypeToAccount(accountType).getCurrency() + " )");
 		}
-		else if (operation == "withdraw") {
+		else if (operation == Operation::Withdraw && it->second.credit != nullptr) {
 			it->second.credit->withdraw(amount);
+			add_transaction("Credit Card Withdrawal: " + to_string(amount) + " " + accountTypeToAccount(accountType).getCurrency() + " From " + accountTypeToString(accountType) + " Account");
 		}
-		else {
-			cout << "Invalid operation.\n";
-		}
+		else cout << "Invalid operation.\n";
 	}
 
-		
-
-		add_transaction("Credit card payment: " + to_string(amount + calculate_transaction_fee(amount)) + " " + currency);
+	
 
 
 

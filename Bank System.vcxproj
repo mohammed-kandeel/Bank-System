@@ -160,8 +160,13 @@
     <ClInclude Include="Validation.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Client.txt" />
+    <Text Include="Admins.txt" />
+    <Text Include="Clients.txt" />
+    <Text Include="Employees.txt" />
+    <Text Include="LastAdminId.txt" />
+    <Text Include="LastCardId.txt" />
     <Text Include="LastClientId.txt" />
+    <Text Include="LastEmployeeId.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

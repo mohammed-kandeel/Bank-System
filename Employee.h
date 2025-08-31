@@ -6,7 +6,6 @@
 #include <thread>
 
 class FilesHelper;
-class FileManager;
 
 class Employee :public Person {
 protected:
@@ -14,8 +13,14 @@ protected:
 	double salary;
 	string currency;
 public:
-	//All employees Data <ID, employee> 
-	static map<int,Employee>employees;
+	//All employees Data <ID, *pointer> 
+	static map<int,Employee*>employees;
+	static void removeAllEmployees() {
+		for (auto& i : Employee::employees) {
+			delete i.second;
+		}
+		Employee::employees.clear();
+	}
 	//cons
 	Employee(){
 		this->salary = 0.0;
@@ -46,11 +51,8 @@ public:
 		Person::displayPersonInfo();
 		cout << "Salary: " << salary << " " << currency << endl;
 	}
-
-	void saveNewClienttoFile(Client& c); // .ccp
-	void addClient(Client& client) {
-		Client::clients.insert({ client.getID(),client });
-		saveNewClienttoFile(client);
+	void addClient(Client* client) {
+		Client::clients.insert({ client->getID(),client });
 		cout << "Client added successfully.\n";
 		this_thread::sleep_for(chrono::seconds(4));
 	}
@@ -65,13 +67,13 @@ public:
 	Client* searchClient(int id) {
 		for (auto& i : Client::clients) {
 			if (i.first == id)
-				return &i.second;
+				return i.second;
 		}
 		return nullptr;
 	}
 	void listClient() {
 		for (auto& i : Client::clients) {
-			i.second.displayClientInfo();
+			i.second->displayClientInfo();
 			cout << "\n----------------------\n\n";
 		}
 	}
@@ -86,8 +88,11 @@ public:
 	}
 
 	
+
 	//move  this methods to  EmployeeManager class  phase 3
 	int getNewClientIDfromFile(); // .ccp
+	int getNewCardIDfromFile(); // .ccp
+
 	Client *getClientInfo() {
 		int id, count{};
 		string name, password;

@@ -54,6 +54,14 @@ public:
 			c.setUsedCreditCard(AccountType::USD, CardType::Credit, stod(sline[21]));
 		}
 
+		//	     string				
+		//	(transactionHistory from 22 to 28)
+		if (sline.size() > 21) {
+			for (int i = 22; i < sline.size(); i++) {
+				c.add_transaction(sline[i]);
+			}
+		}
+
 		return c;
 	}
 	static Employee parseToEmployee(string line) {

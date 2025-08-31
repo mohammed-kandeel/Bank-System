@@ -21,13 +21,13 @@ public:
     }
     //keys
     bool isExpired(string currentDate) {
-        return currentDate >= expiryDate;
+        return 0;//currentDate >= expiryDate;
     }
     //sets
     void setIdCard(int id) {
         this->id = id;
     }
-    void setExpiryDateCard(string idexpiryDate){
+    void setExpiryDateCard(string expiryDate){
         this->expiryDate = expiryDate;
     }
     //gets

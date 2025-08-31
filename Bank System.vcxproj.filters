@@ -109,7 +109,22 @@
     <Text Include="LastClientId.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="Client.txt">
+    <Text Include="Clients.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="LastEmployeeId.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="LastCardId.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="LastAdminId.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="Employees.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="Admins.txt">
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
