@@ -22,13 +22,6 @@ private:
 	int maxTransactions = 7;
 	
 	//private meths
-	string accountTypeToString(AccountType accountType) {
-		switch (accountType) {
-			case AccountType::EGP:return "EGP";
-			case AccountType::USD:return "USD";
-		}
-		return "unKnown";
-	}
 	Account& accountTypeToAccount(AccountType accountType) {
 		switch (accountType) {
 			case AccountType::EGP:return EGP;
@@ -61,12 +54,8 @@ public:
 	Client(int id, string name, string password, double balance) : Person(id, name, password),EGP(balance,"EGP") {
 		hasUSD = false;
 	}
-	Client(int id, string name, string password, double balanceEGP,bool hasUSD, double balanceUSD) : Person(id, name, password), EGP(balanceEGP, "EGP") {
+	Client(int id, string name, string password, double balanceEGP,bool hasUSD, double balanceUSD) : Person(id, name, password), EGP(balanceEGP, "EGP"), USD(balanceUSD,"USD") {
 		this->hasUSD = hasUSD;
-		if (hasUSD) {
-			USD.setBalance(balanceUSD);
-			USD.setCurrency("USD");
-		}
 	}
 	//key
 	bool hasUSDAccount() {
@@ -245,6 +234,13 @@ public:
 		if (transactionHistory.size() == maxTransactions)
 			transactionHistory.pop_back();
 		transactionHistory.insert(transactionHistory.begin(), Transaction);
+	}
+	string accountTypeToString(AccountType accountType) {
+		switch (accountType) {
+		case AccountType::EGP:return "EGP";
+		case AccountType::USD:return "USD";
+		}
+		return "unKnown";
 	}
 	//meths account
 	void deposit(double amount, AccountType accountType) {

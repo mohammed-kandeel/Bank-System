@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include "EmployeeManager.h"
 #include "FileManager.h"
 #include "Client.h"
 using namespace std;
@@ -22,18 +23,28 @@ int main(){
 	//Client::clients.insert({ 1,c });
 	//Client::clients.insert({ 2,c2 });
 	
-	Client::clients.at(1)->useDebitCard(AccountType::EGP, 100, Operation::Withdraw);
-	Client::clients.at(2)->useDebitCard(AccountType::EGP, 200, Operation::Withdraw);
+	//Client::clients.at(1)->useDebitCard(AccountType::EGP, 100, Operation::Withdraw);
+	//Client::clients.at(2)->useDebitCard(AccountType::EGP, 200, Operation::Withdraw);
 	//Client::clients.at(1)->transFerTo(200, Client::clients.at(2), AccountType::EGP);
-	Client::clients.at(1)->displayClientInfo();
-	Client::clients.at(1)->displayClientTransactionHistory();
+	//Client::clients.at(1)->displayClientInfo();
+	//Client::clients.at(1)->displayClientTransactionHistory();
 
-	cout << "\n\n---------------------------------\n\n";
+	//cout << "\n\n---------------------------------\n\n";
 	
-	Client::clients.at(2)->displayClientInfo();
-	Client::clients.at(2)->displayClientTransactionHistory();
+	//Client::clients.at(2)->displayClientInfo();
+	//Client::clients.at(2)->displayClientTransactionHistory();
 	//cout<<Client::clients.at(1)->getBalance(AccountType::EGP);
 	//cout<<Client::clients.rbegin()->first;   //??? ( ?? ?? ) ?????
 
-	FileManager::updateAllData();
+	//FileManager::updateAllData();
+
+
+
+
+	//-------    EmployeeManager  -------------------
+	Employee* e = new Employee(1, "mohamed", "123456789", 50000);
+	while(true) {
+		if (EmployeeManager::employeeOptions(e)) break;
+	}
+	delete e;
 }

@@ -1,3 +1,2 @@
 #include "Admin.h"
 map<int, Admin*>Admin::admins;
-
