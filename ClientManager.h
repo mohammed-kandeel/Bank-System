@@ -81,72 +81,129 @@ public:
 	}
 	
 	static bool clientOptions(Client* client) {
-		int count = 0;
-		string choice;
+    int count = 0;
+    string choice;
 
-		while (true) {
-			printClientMenu();
-			getline(cin, choice);
+    while (true) {
+        printClientMenu();
+        getline(cin, choice);
 
-			if (choice == "1") {
-				system("cls");
-				cout << "\n======== Account Information ========\n\n";
-				client->displayClientInfo();
-				cout << endl;
-				system("pause");
-				return true;
-			}
-			else if (choice == "2") {
-				updatePassword(client);
-				return true;
-			}
-			else if (choice == "3") {
-				system("cls");
-				cout << "\nDeposit feature\n";
-				system("pause");
-				return true;
-			}
-			else if (choice == "4") {
-				system("cls");
-				cout << "\nWithdraw feature\n";
-				system("pause");
-				return true;
-			}
-			else if (choice == "5") {
-				system("cls");
-				cout << "\nTransfer feature\n";
-				system("pause");
-				return true;
-			}
-			else if (choice == "6") {
-				system("cls");
-				cout << "\n======== Account Balance ========\n\n";
-				cout << "EGP Balance: " << client->getBalance() << " EGP\n";
-				if (client->hasUSDAccount()) {
-					cout << "USD Balance: " << client->getUSDBalance() << " USD\n";
-				}
-				else {
-					cout << "USD Account: Not Available\n";
-				}
-				cout << endl;
-				system("pause");
-				return true;
-			}
-			else if (choice == "7") {
-				system("cls");
-				cout << "\nTransaction history\n";
-				system("pause");
-				return true;
-			}
-			else if (choice == "0") {
-				return false;
-			}
-			else {
-				showError("Invalid choice! Please try again.\n");
-				count++;
-				if (maxTry(count)) 
-					return false;
-			}
-		}
-	}
-};
+        if (choice == "1") { 
+            system("cls");
+            cout << "\n======== Account Information ========\n\n";
+            client->displayClientInfo();
+            cout << endl;
+            system("pause");
+        }
+
+        else if (choice == "2") { 
+            updatePassword(client);
+        }
+
+        else if (choice == "3") { 
+            system("cls");
+            double amount;
+            int accChoice;
+            cout << "\n======== Deposit ========\n\n";
+            cout << "1. EGP Account\n";
+            cout << "2. USD Account\n";
+            cout << "Choose account type: ";
+            cin >> accChoice; cin.ignore();
+
+            cout << "Enter amount to deposit: ";
+            cin >> amount; cin.ignore();
+
+            if (accChoice == 1) client->deposit(amount, AccountType::EGP);
+            else if (accChoice == 2) client->deposit(amount, AccountType::USD);
+            else showError("Invalid account type!");
+
+            system("pause");
+        }
+
+        else if (choice == "4") {
+            system("cls");
+            double amount;
+            int accChoice;
+            cout << "\n======== Withdraw ========\n\n";
+            cout << "1. EGP Account\n";
+            cout << "2. USD Account\n";
+            cout << "Choose account type: ";
+            cin >> accChoice; cin.ignore();
+
+            cout << "Enter amount to withdraw: ";
+            cin >> amount; cin.ignore();
+
+            if (accChoice == 1) {
+                if (client->checkAvailableBalance(amount, AccountType::EGP))
+                    client->withdraw(amount, AccountType::EGP);
+                else showError("Insufficient balance!");
+            }
+            else if (accChoice == 2) {
+                if (client->checkAvailableBalance(amount, AccountType::USD))
+                    client->withdraw(amount, AccountType::USD);
+                else showError("Insufficient balance!");
+            }
+            else showError("Invalid account type!");
+
+            system("pause");
+        }
+
+        else if (choice == "5") { 
+            system("cls");
+            double amount;
+            int accChoice, recipientId;
+            cout << "\n======== Transfer ========\n\n";
+            cout << "1. EGP Account\n";
+            cout << "2. USD Account\n";
+            cout << "Choose account type: ";
+            cin >> accChoice; cin.ignore();
+
+            cout << "Enter recipient ID: ";
+            cin >> recipientId; cin.ignore();
+
+            cout << "Enter amount to transfer: ";
+            cin >> amount; cin.ignore();
+
+            auto it = Client::clients.find(recipientId);
+            if (it == Client::clients.end()) {
+                showError("Recipient not found!");
+            }
+            else {
+                if (accChoice == 1) client->transFerTo(amount, it->second, AccountType::EGP);
+                else if (accChoice == 2) client->transFerTo(amount, it->second, AccountType::USD);
+                else showError("Invalid account type!");
+            }
+
+            system("pause");
+        }
+
+        else if (choice == "6") { 
+            system("cls");
+            cout << "\n======== Account Balance ========\n\n";
+            cout << "EGP Balance: " << client->getBalance(AccountType::EGP) << " EGP\n";
+            if (client->hasUSDAccount())
+                cout << "USD Balance: " << client->getBalance(AccountType::USD) << " USD\n";
+            else
+                cout << "USD Account: Not Available\n";
+            cout << endl;
+            system("pause");
+        }
+
+        else if (choice == "7") { 
+            system("cls");
+            client->displayClientTransactionHistory();
+            cout << endl;
+            system("pause");
+        }
+
+        else if (choice == "0") { 
+            return false;
+        }
+
+        else { 
+            showError("Invalid choice! Please try again.\n");
+            count++;
+            if (maxTry(count)) return false;
+        }
+    }
+}
