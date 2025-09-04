@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"FileManager.h"
 
 class EmployeeManager{
@@ -29,15 +29,16 @@ private:
 		cout << "-------------------------------\n";
 	}
 	template<class T>
-	static bool tryParseNumber(string& string, T& num) {
-		try { 
-			num = stod(string);
-			return true;
+	static bool tryParseNumber(string& input, T& num) {
+		try {
+			size_t idx;
+			num = stod(input, &idx);  // idx = آخر موضع حوِّلته stod
+			// لو في أي حاجة زيادة بعد الرقم، اعتبره خطأ
+			return idx == input.length();
 		}
 		catch (invalid_argument&) { return false; }
 		catch (out_of_range&) { return false; }
 	}
-
 	
 	static bool askForUSD() {
 		string temp;

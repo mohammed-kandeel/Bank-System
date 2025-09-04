@@ -46,13 +46,16 @@ int main(){
 
 
 	//----------------       ClientManager      ----------------------
+
 	Client* c = Client::clients[1];
-	ClientManager::Deposit(c);
+	while (true) {
+		if (!ClientManager::clientMenu(c)) break;
+	}
 
 
 
-
-	//-------    EmployeeManager  -------------------
+	//----------------      EmployeeManager     ---------------------
+	
 	//Employee* e = new Employee(1, "mohamed", "123456789", 50000);
 	//Employee::employees.insert({ 1,e });
 

@@ -6,8 +6,8 @@
 #include "AccountCard.h"
 #include <map>
 
-enum class CardType { Credit, Debit };
-enum class AccountType { EGP, USD ,Non };
+enum class CardType { Credit, Debit, Non };
+enum class AccountType { EGP, USD, Non };
 enum class Operation { Deposit, Withdraw };
 
 
@@ -242,6 +242,13 @@ public:
 		}
 		return "unKnown";
 	}
+	string cardTypeToString(CardType cardType) {
+		switch (cardType) {
+		case CardType::Debit:return "Debit";
+		case CardType::Credit:return "Credit";
+		}
+		return "unKnown";
+	}
 	//meths account
 	void deposit(double amount, AccountType accountType) {
 		if (accountType == AccountType::EGP) {
@@ -339,7 +346,6 @@ public:
 	}
 
 	
-
 
 
 

@@ -47,7 +47,6 @@ public:
             }
             else {
                 account->deposit(amount);
-                cout << "Direct deposit to account!\n";
             }
         }
         else {

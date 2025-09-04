@@ -22,26 +22,92 @@ private:
 		}
 		return false;
 	}
-	static bool tryParseNumber(string& string, double& num) {
+	static bool tryParseNumber(string& input, double& num) {
 		try {
-			num = stod(string);
-			return true;
+			size_t idx;
+			num = stod(input, &idx);  // idx = آخر موضع حوِّلته stod
+			// لو في أي حاجة زيادة بعد الرقم، اعتبره خطأ
+			return idx == input.length();
 		}
 		catch (invalid_argument&) { return false; }
 		catch (out_of_range&) { return false; }
 	}
+
+	static void printAccountMenu() {
+		system("cls");
+		cout << "========  Account Menu (Client)  ========\n\n";
+		cout << "1. Deposit\n";
+		cout << "2. Withdraw\n";
+		cout << "3. Transfer To\n";
+		cout << "4. View Balance\n";
+		cout << "5. View Transaction History\n";
+		cout << "6. Update Password\n";
+		cout << "0. Return to Client Menu\n";
+		cout << "\nEnter your choice (0-6): ";
+	}
+	static void printCardOprations() {
+		system("cls");
+		cout << "========  Card Menu (Client)  ========\n\n";
+		cout << "1. Deposit\n";
+		cout << "2. Withdraw\n";
+		cout << "3. View Balance\n";
+		cout << "0. Return to Client Menu\n";
+		cout << "\nEnter your choice (0-3): ";
+	}
+	static void printCardType() {
+		system("cls");
+		cout << "========  Card Menu (Client)  ========\n\n";
+		cout << "1. Debit Card\n";
+		cout << "2. Credit Card\n";
+		cout << "0. Return to Client Menu\n";
+		cout << "\nEnter your choice (0-2): ";
+	}
 	static void printWhichAccountType() {
+		cout << "----  Select Account Type  -----\n";
 		cout << "1. Use EGP Account \n";
 		cout << "2. Use USD Account \n";
 		cout << "0. Return to Menu\n";
 		cout << "\nEnter your choice (0-2): ";
+	}
+	static void printClientMenu() {
+		system("cls");
+		cout << "========  Client Menu  ========\n\n";
+		cout << "1. Use Account\n";
+		cout << "2. Use Card\n";
+		cout << "0. Return to Login Menu\n";
+		cout << "\nEnter your choice (0-2): ";
+	}
+
+	static CardType getCardType(string line) {
+		int count = 0;
+		string temp;
+		do {
+			system("cls");
+			cout << line;
+			printCardType();
+			getline(cin, temp);
+
+			if (cancelOperation(temp))
+				return CardType::Non;
+
+			if (temp == "1")
+				return CardType::Debit;
+			else if (temp == "2") 
+				return CardType::Credit;
+			else {
+				count++;
+				if (maxTry(count)) return CardType::Non;
+				showError("Invalid input. Please enter a valid number.\n");
+				continue;
+			}
+		} while (true);
 	}
 	static AccountType getAccountType(string line, Client* client) {
 		int count = 0;
 		string temp;
 		do {
 			system("cls");
-			cout << line;
+			cout << line << endl;
 			printWhichAccountType();
 			getline(cin, temp);
 
@@ -66,6 +132,148 @@ private:
 			}
 		} while (true);
 	}
+	static double amountCard(string line, AccountType accountType) {
+		int count;
+		string temp;
+		double amount;
+
+		count = 0;
+		do {
+			system("cls");
+			cout << line << endl;
+			cout << "->Enter amount (or press '0' to return to main menu): ";
+			getline(cin, temp);
+
+			if (cancelOperation(temp))
+				return-1;
+			if (!tryParseNumber(temp, amount)) {
+				count++;
+				if (maxTry(count)) return -1;
+				showError("Invalid input. Please enter a valid number.\n");
+				continue;
+			}
+			else
+				return amount;
+		} while (true);
+	}
+
+	static void cardDeposit(Client* client) {
+		string line;
+		CardType cardType;
+		AccountType accountType;
+		double amount;
+		line = "========  Card Menu (Client)  ========\n\n-----------  Deposit  ----------\n\n";
+
+		cardType = getCardType(line);
+		if (cardType == CardType::Non) return;
+
+		line += "->Use " + (client->cardTypeToString(cardType)) + " Card\n";
+		accountType = getAccountType(line, client);
+		if (accountType == AccountType::Non) return;
+
+		if (cardType == CardType::Debit && !client->hasDebitCard(accountType)) {
+			showError("You don't have a card linked to this account.\nReturning to main menu...\n");
+			return;
+		}
+		if (cardType == CardType::Credit && !client->hasCreditCard(accountType)) {
+			showError("You don't have a card linked to this account.\nReturning to main menu...\n");
+			return;
+		}
+		line += "->With " + (client->accountTypeToString(accountType)) + " Account\n";
+
+		amount = amountCard(line, accountType);
+		if (amount == -1) return;
+
+		if (cardType == CardType::Debit)
+			client->useDebitCard(accountType, amount, Operation::Deposit);
+		else if (cardType == CardType::Credit)
+			client->useCreditCard(accountType, amount, Operation::Deposit);
+
+		cout << "\nDeposit completed successfully!\nReturning to main menu...\n";
+		this_thread::sleep_for(chrono::seconds(3));
+	}
+	static void cardWithdraw(Client* client) {
+		string line;
+		CardType cardType;
+		AccountType accountType;
+		double amount;
+		line = "========  Card Menu (Client)  ========\n\n----------   Withdraw  ---------\n\n";
+		cardType = getCardType(line);
+		if (cardType == CardType::Non) return;
+
+		line += "->Use " + (client->cardTypeToString(cardType)) + " Card\n";
+		accountType = getAccountType(line, client);
+		if (accountType == AccountType::Non) return;
+
+		if (cardType == CardType::Debit && !client->hasDebitCard(accountType)) {
+			showError("You don't have a card linked to this account.\nReturning to main menu...\n");
+			return;
+		}
+		if (cardType == CardType::Credit && !client->hasCreditCard(accountType)) {
+			showError("You don't have a card linked to this account.\nReturning to main menu...\n");
+			return;
+		}
+		line += "->With " + (client->accountTypeToString(accountType)) + " Account\n";
+
+		amount = amountCard(line, accountType);
+		if (amount == -1) return;
+
+		if (cardType == CardType::Debit) {
+			if (amount <= client->getBalance(accountType)) {
+				client->useDebitCard(accountType, amount, Operation::Withdraw);
+				cout << "\nWithdraw completed successfully!\nReturning to main menu...\n";
+				this_thread::sleep_for(chrono::seconds(3));
+			}
+			else
+				showError("You don't have enough balance in your account.\nReturning to main menu...\n");
+		}
+		else if (cardType == CardType::Credit) {
+			if ((client->getCreditUsed(accountType) + amount) <= client->getCreditLimit(accountType)) {
+				client->useCreditCard(accountType, amount, Operation::Withdraw);
+				cout << "\nWithdraw completed successfully!\nReturning to main menu...\n	";
+				this_thread::sleep_for(chrono::seconds(3));
+			}
+			else
+				showError("Your available credit is insufficient.\nReturning to main menu...\n");
+		}
+	}
+	static void viewBalance(Client* client) {
+		string line;
+		CardType cardType;
+		AccountType accountType;
+		line = "========  Card Menu (Client)  ========\n\n--------   View Balance  -------\n\n";
+		cardType = getCardType(line);
+		if (cardType == CardType::Non) return;
+
+		line += "->Use " + (client->cardTypeToString(cardType)) + " Card\n";
+		accountType = getAccountType(line, client);
+		if (accountType == AccountType::Non) return;
+
+		if (cardType == CardType::Debit && !client->hasDebitCard(accountType)) {
+			showError("You don't have a card linked to this account.\nReturning to main menu...\n");
+			return;
+		}
+		if (cardType == CardType::Credit && !client->hasCreditCard(accountType)) {
+			showError("You don't have a card linked to this account.\nReturning to main menu...\n");
+			return;
+		}
+		line += "->With " + (client->accountTypeToString(accountType)) + " Account\n";
+
+		if (cardType == CardType::Debit) {
+			system("cls");
+			cout << "========  Card Menu (Client)  ========\n\n--------   View Balance  -------\n\n";
+			cout << "->Balance: " << client->getBalance(accountType) << " " << client->getCurrency(accountType) << endl << endl;
+			system("pause");
+		}
+		else if (cardType == CardType::Credit) {
+			system("cls");
+			cout << "========  Card Menu (Client)  ========\n\n--------   View Balance  -------\n\n";
+			cout << "->Balance: " << client->getBalance(accountType) << " " << client->getCurrency(accountType) << endl;
+			cout << "->Credit Limit: " << client->getCreditLimit(accountType) << " " << client->getCurrency(accountType) << endl;
+			cout << "->Credit Used: " << client->getCreditUsed(accountType) << " " << client->getCurrency(accountType) << endl << endl;
+			system("pause");
+		}
+	}
 
 	static void Deposit(string line, Client* client, AccountType accountType) {
 		int count;
@@ -82,13 +290,20 @@ private:
 			if (cancelOperation(temp))
 				return;
 			if (!tryParseNumber(temp, amount)) {
-				showError("\nInvalid input. Please enter a valid number.\n");
 				count++;
+				if (maxTry(count)) return;
+				showError("Invalid input. Please enter a valid number.\n");
+				continue;
+			}
+			if (amount <= 0) {
+				count++;
+				if (maxTry(count)) return;
+				showError("Amount must be greater than zero.\n");
 				continue;
 			}
 			else {
 				client->deposit(amount, accountType);
-				cout << "\nDeposit completed successfully!\nReturning to main menu...\n	";
+				cout << "\nDeposit completed successfully!\nReturning to main menu...\n";
 				this_thread::sleep_for(chrono::seconds(3));
 				return;
 			}
@@ -109,54 +324,73 @@ private:
 			if (cancelOperation(temp))
 				return;
 			if (!tryParseNumber(temp, amount)) {
-				showError("\nInvalid input. Please enter a valid number.\n");
 				count++;
+				if (maxTry(count)) return;
+				showError("Invalid input. Please enter a valid number.\n");
 				continue;
 			}
-			if (client->getBalance(accountType) > amount || amount <= 0) {
-				showError("\nInvalid input. Please enter a valid number.\n");
+
+			if (amount <= 0) {
 				count++;
+				if (maxTry(count)) return;
+				showError("Amount must be greater than zero.\n");
 				continue;
+			}
+			if (client->getBalance(accountType) < amount) {
+				showError("Insufficient balance.\nReturning to main menu...\n");
+				return;
 			}
 			else {
 				client->withdraw(amount, accountType);
-				cout << "\nwithdraw completed successfully!\nReturning to main menu...\n	";
+				cout << "\nWithdraw completed successfully!\nReturning to main menu...\n";
 				this_thread::sleep_for(chrono::seconds(3));
 				return;
 			}
 		} while (true);
 	}
 
+	static bool accountMenu(Client* client) {
+		int count = 0;
+		string choice;
+
+		while (true) {
+			printAccountMenu();
+			getline(cin, choice);
+			if (choice.empty()) { showError("No input\n"); count++; continue; }
+
+			switch (choice[0]) {
+			case '1': { Deposit(client); return true; } break;
+				//case '2': { withdraw(client); return true; } break;
+				//case '3': { transferTo(client); return true; } break;
+				//case '4': { viewBalance(client); return true; } break;
+				//case '5': { viewTransactionHistory(client); return true; } break;
+				case '6': { updatePassword(client); return true; } break;
+				case '0': { return false; } break;
+			default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
+			}
+		}
+	}
+	static bool cardOperations(Client* client) {
+		int count = 0;
+		string choice;
+
+		while (true) {
+			printCardOprations();
+			getline(cin, choice);
+			if (choice.empty()) { showError("No input\n"); count++; continue; }
+
+			switch (choice[0]) {
+			case '1': { cardDeposit(client); return true; } break;
+			case '2': { cardWithdraw(client); return true; } break;
+			case '3': { viewBalance(client); return true; } break;
+			case '0': { return false; } break;
+			default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
+			}
+		}
+	}
 
 public:
-	static void printClientMenu() {
-		system("cls");
-		cout << "========  Client Menu  ========\n\n";
-		cout << "1. Use Account\n";
-		cout << "2. Use Card\n";
-		cout << "0. Return to Main Menu\n";
-		cout << "\nEnter your choice (0-2): ";
-	}
-	static void printAccountMenu() {
-		system("cls");
-		cout << "========  Account Menu (Client)  ========\n\n";
-		cout << "1. Deposit\n";
-		cout << "2. Withdraw\n";
-		cout << "3. Transfer To\n";
-		cout << "4. View Balance\n";
-		cout << "5. View Transaction History\n";
-		cout << "6. Update Password\n";
-		cout << "0. Return to Client Menu\n";
-		cout << "\nEnter your choice (0-6): ";
-	}
-	static void printCardType() {
-		system("cls");
-		cout << "========  Card Menu (Client)  ========\n\n";
-		cout << "1. Credit Card\n";
-		cout << "2. Debit Card\n";
-		cout << "0. Return to Client Menu\n";
-		cout << "\nEnter your choice (0-2): ";
-	}
+	
 	static void Deposit(Client* client) {
 		string line;
 		AccountType accountType;
@@ -167,28 +401,6 @@ public:
 
 		if (accountType == AccountType::Non) return;
 		Deposit(line, client, accountType);
-	}
-
-
-
-
-
-
-
-
-
-	static void printClientMenu2() {
-		system("cls");
-		cout << "=====   Client Menu   =====\n\n";
-		cout << "1. Account Information\n";
-		cout << "2. Change Password\n";
-		cout << "3. Deposit Funds\n";
-		cout << "4. Withdraw Funds\n";
-		cout << "5. Transfer Funds\n";
-		cout << "6. Account Balance\n";
-		cout << "7. view Transaction History\n";
-		cout << "0. Logout\n";
-		cout << "\nSelect an option (0-7): ";
 	}
 	static void updatePassword(Person* person) {
 		string newPassword, oldPassword;
@@ -220,6 +432,8 @@ public:
 		cout << "\nPassword changed successfully!\n";
 		this_thread::sleep_for(chrono::seconds(3));
 	}
+
+
 	static Client* login(int id, string password) {
 		auto i = Client::clients.find(id);
 		if (i == Client::clients.end() || i->second->getPassword() != password) {
@@ -227,6 +441,42 @@ public:
 			return nullptr;
 		}
 		return i->second;
+	}
+	static bool clientMenu(Client* client) {
+		int count = 0;
+		string choice;
+
+		while (true) {
+			printClientMenu();
+			getline(cin, choice);
+			if (choice.empty()) { showError("No input\n"); count++; continue; }
+
+			switch (choice[0]) {
+				case '1': { while (accountMenu(client)); return true; } break;
+				case '2': { while (cardOperations(client)); return true; } break;
+				case '0': { return false; } break;
+				default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
+			}
+		}
+	}
+	
+
+
+
+
+
+	static void printClientMenu2() {
+		system("cls");
+		cout << "=====   Client Menu   =====\n\n";
+		cout << "1. Account Information\n";
+		cout << "2. Change Password\n";
+		cout << "3. Deposit Funds\n";
+		cout << "4. Withdraw Funds\n";
+		cout << "5. Transfer Funds\n";
+		cout << "6. Account Balance\n";
+		cout << "7. view Transaction History\n";
+		cout << "0. Logout\n";
+		cout << "\nSelect an option (0-7): ";
 	}
 	static bool clientOptions(Client* client) {
 	int count = 0;
