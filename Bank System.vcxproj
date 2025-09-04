@@ -130,6 +130,7 @@
     <ClCompile Include="Account.cpp" />
     <ClCompile Include="AccountCard.cpp" />
     <ClCompile Include="Admin.cpp" />
+    <ClCompile Include="AdminManager.cpp" />
     <ClCompile Include="Bank System.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CreditCard.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Account.h" />
     <ClInclude Include="AccountCard.h" />
     <ClInclude Include="Admin.h" />
+    <ClInclude Include="AdminManager.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="CreditCard.h" />
     <ClInclude Include="DataSourceInterface.h" />
