@@ -74,7 +74,7 @@ public:
 	static Client* login(int id, string password) {
 		auto i = Client::clients.find(id);
 		if (i == Client::clients.end() || i->second->getPassword() != password) {
-			showError("Wrong ID or password. Going back to meu.\n");
+			showError("Wrong ID or password. Going back to menu.\n");
 			return nullptr;
 		}
 		return i->second;
@@ -145,4 +145,5 @@ public:
 			}
 		}
 	}
+
 };
