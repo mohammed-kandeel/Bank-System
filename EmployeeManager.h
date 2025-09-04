@@ -375,12 +375,6 @@ public:
 			}
 				
 		} while (true);
-
-
-
-
-
-		
 	}
 	static void searchForClient(Employee* employee) {
 		string line = "\n========  Search For Client  ========\n\n";

@@ -2,6 +2,7 @@
 #include <string>
 #include "EmployeeManager.h"
 #include "FileManager.h"
+#include "ClientManager.h"
 #include "Client.h"
 using namespace std;
 
@@ -41,29 +42,39 @@ int main(){
 
 
 
+
+
+
+	//----------------       ClientManager      ----------------------
+	Client* c = Client::clients[1];
+	ClientManager::Deposit(c);
+
+
+
+
 	//-------    EmployeeManager  -------------------
-	Employee* e = new Employee(1, "mohamed", "123456789", 50000);
-	Employee::employees.insert({ 1,e });
+	//Employee* e = new Employee(1, "mohamed", "123456789", 50000);
+	//Employee::employees.insert({ 1,e });
 
-	int id;
-	string  password;
-	cout << "enter id: ";
-	cin>> id;
-	cin.ignore();
-	cout << "enter password: ";
-	getline(cin, password);
+	//int id;
+	//string  password;
+	//cout << "enter id: ";
+	//cin>> id;
+	//cin.ignore();
+	//cout << "enter password: ";
+	//getline(cin, password);
 
-	//?? ????? ????
-	Person* e2 = EmployeeManager::login(id, password);
+	////?? ????? ????
+	//Person* e2 = EmployeeManager::login(id, password);
 
-	if(e2==nullptr)
-	{
-		//return;
-	}
-	else {
-		while (true) {
-			if (!EmployeeManager::employeeOptions(e)) break;
-		}
-	}
-	delete e;
+	//if(e2==nullptr)
+	//{
+	//	//return;
+	//}
+	//else {
+	//	while (true) {
+	//		if (!EmployeeManager::employeeOptions(e)) break;
+	//	}
+	//}
+	//delete e;
 }

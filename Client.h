@@ -7,7 +7,7 @@
 #include <map>
 
 enum class CardType { Credit, Debit };
-enum class AccountType { EGP, USD };
+enum class AccountType { EGP, USD ,Non };
 enum class Operation { Deposit, Withdraw };
 
 

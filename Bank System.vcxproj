@@ -151,6 +151,7 @@
     <ClInclude Include="Admin.h" />
     <ClInclude Include="AdminManager.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="ClientManager.h" />
     <ClInclude Include="CreditCard.h" />
     <ClInclude Include="DataSourceInterface.h" />
     <ClInclude Include="DebitCard.h" />
