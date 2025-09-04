@@ -29,15 +29,15 @@ public:
 	static void printClientMenu() {
 		system("cls");
 		cout << "=====   Client Menu   =====\n\n";
-		cout << "1. Check My Account Info\n";
-		cout << "2. Change My Password\n";
-		cout << "3. Put Money In Account\n";
-		cout << "4. Take Money Out\n";
-		cout << "5. Send Money To Someone\n";
-		cout << "6. See How Much Money I Have\n";
-		cout << "7. See My Transaction History\n";
-		cout << "0. Go Back To Login\n";
-		cout << "\nWhat do you want to do? (0-7): ";
+		cout << "1. Account Information\n";
+		cout << "2. Change Password\n";
+		cout << "3. Deposit Funds\n";
+		cout << "4. Withdraw Funds\n";
+		cout << "5. Transfer Funds\n";
+		cout << "6. Account Balance\n";
+		cout << "7. Transaction History\n";
+		cout << "0. Logout\n";
+		cout << "\nSelect an option (0-7): ";
 	}
 	
 	static void updatePassword(Person* person) {
@@ -81,69 +81,72 @@ public:
 	}
 	
 	static bool clientOptions(Client* client) {
-		int tryCount = 0;
-		string userChoice;
+		int count = 0;
+		string choice;
 
 		while (true) {
 			printClientMenu();
-			getline(cin, userChoice);
+			getline(cin, choice);
 
-			if (userChoice == "1") {
+			if (choice == "1") {
 				system("cls");
-				cout << "\n======== My Account Info ========\n\n";
+				cout << "\n======== Account Information ========\n\n";
 				client->displayClientInfo();
 				cout << endl;
 				system("pause");
 				return true;
 			}
-			else if (userChoice == "2") {
+			else if (choice == "2") {
 				updatePassword(client);
 				return true;
 			}
-			else if (userChoice == "3") {
-				cout << "\nDeposit money - will be added later\n";
-				system("pause");
-				return true;
-			}
-			else if (userChoice == "4") {
-				cout << "\nWithdraw money - will be added later\n";
-				system("pause");
-				return true;
-			}
-			else if (userChoice == "5") {
-				cout << "\nTransfer money - will be added later\n";
-				system("pause");
-				return true;
-			}
-			else if (userChoice == "6") {
+			else if (choice == "3") {
 				system("cls");
-				cout << "\n======== My Money ========\n\n";
-				cout << "Egyptian pounds: " << client->getBalance() << " EGP\n";
+				cout << "\nDeposit feature\n";
+				system("pause");
+				return true;
+			}
+			else if (choice == "4") {
+				system("cls");
+				cout << "\nWithdraw feature\n";
+				system("pause");
+				return true;
+			}
+			else if (choice == "5") {
+				system("cls");
+				cout << "\nTransfer feature\n";
+				system("pause");
+				return true;
+			}
+			else if (choice == "6") {
+				system("cls");
+				cout << "\n======== Account Balance ========\n\n";
+				cout << "EGP Balance: " << client->getBalance() << " EGP\n";
 				if (client->hasUSDAccount()) {
-					cout << "US dollars: " << client->getUSDBalance() << " USD\n";
+					cout << "USD Balance: " << client->getUSDBalance() << " USD\n";
 				}
 				else {
-					cout << "US dollars account: I don't have one\n";
+					cout << "USD Account: Not Available\n";
 				}
 				cout << endl;
 				system("pause");
 				return true;
 			}
-			else if (userChoice == "7") {
-				cout << "\nTransaction history - will be added later\n";
+			else if (choice == "7") {
+				system("cls");
+				cout << "\nTransaction history\n";
 				system("pause");
 				return true;
 			}
-			else if (userChoice == "0") {
+			else if (choice == "0") {
 				return false;
 			}
 			else {
-				showError("That's not a valid choice!\n");
-				tryCount++;
-				if (maxTry(tryCount)) 
+				showError("Invalid choice! Please try again.\n");
+				count++;
+				if (maxTry(count)) 
 					return false;
 			}
 		}
 	}
-
 };
