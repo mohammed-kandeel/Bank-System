@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -128,32 +128,50 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Account.cpp" />
+    <ClCompile Include="AccountCard.cpp" />
     <ClCompile Include="Admin.cpp" />
+    <ClCompile Include="AdminManager.cpp" />
     <ClCompile Include="Bank System.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="CreditCard.cpp" />
     <ClCompile Include="DataSourceInterface.cpp" />
+    <ClCompile Include="DebitCard.cpp" />
     <ClCompile Include="Employee.cpp" />
+    <ClCompile Include="EmployeeManager.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FilesHelper.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PaymentMethod.cpp" />
     <ClCompile Include="Person.cpp" />
     <ClCompile Include="Validation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Account.h" />
+    <ClInclude Include="AccountCard.h" />
     <ClInclude Include="Admin.h" />
+    <ClInclude Include="AdminManager.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="ClientManager.h" />
+    <ClInclude Include="CreditCard.h" />
     <ClInclude Include="DataSourceInterface.h" />
+    <ClInclude Include="DebitCard.h" />
     <ClInclude Include="Employee.h" />
+    <ClInclude Include="EmployeeManager.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FilesHelper.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="PaymentMethod.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="Validation.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Client.txt" />
+    <Text Include="Admins.txt" />
+    <Text Include="Clients.txt" />
+    <Text Include="Employees.txt" />
+    <Text Include="LastAdminId.txt" />
+    <Text Include="LastCardId.txt" />
     <Text Include="LastClientId.txt" />
+    <Text Include="LastEmployeeId.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

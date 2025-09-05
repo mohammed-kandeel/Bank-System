@@ -5,17 +5,67 @@
 class FileManager:public DataSourceInterface {
 public:
 	//save one person to file
-	static void addClient(Client& c);         //.ccp
-	static void addEmployee(Employee& e);    //.ccp
-	static void addAdmin(Admin& a);         //.ccp
+	static void addClient(Client& c) {
+			FilesHelper::saveClient(c);
+	}
+	static void addEmployee(Employee& e) {
+		FilesHelper::saveEmployee("Employees.txt", "LastEmployeeId.txt", e);
+	}
+	static void addAdmin(Admin& a) {
+		FilesHelper::saveEmployee("Admins.txt", "LastAdminId.txt", a);
+	}
 
-	// get all persons data from the files
-	static void getAllClients();      //.ccp
-	static void getAllEmployees();   //.ccp
-	static void getAllAdmins();     //.ccp
+	//get all persons data from the files
+	static void getAllClients() {
+		FilesHelper::getClients();
+	}
+	static void getAllEmployees() {
+		FilesHelper::getEmployees();
+	}
+	static void getAllAdmins() {
+		FilesHelper::getAdmins();
+	}
 
 	//remove all data from the files
-	static void removeAllClients();    //.ccp
-	static void removeAllEmployee();  //.ccp
-	static void removeAllAdmins();   //.ccp
+	static void removeAllClients() {
+		FilesHelper::clearFile("Clients.txt", "LastClientId.txt");
+	}
+	static void removeAllEmployees() {
+		FilesHelper::clearFile("Employees.txt", "LastEmployeeId.txt");
+	}
+	static void removeAllAdmins() {
+		FilesHelper::clearFile("Admins.txt", "LastAdminId.txt");
+	}
+
+	//update data (remove All data & save All data)
+	static void updateClients() {
+		FilesHelper::updateClients();
+	}
+	static void updateEmployees() {
+		FilesHelper::updateEmployees();
+	}
+	static void updateAdmins() {
+		FilesHelper::updateAdmins();
+	}
+
+	//get all data from the files (Clients & Employees & Admins)
+	static void getAllData() {
+		getAllClients();
+		getAllEmployees();
+		getAllAdmins();
+	}
+
+	// Update all system data (Clients, Employees, and Admins)
+	static void updateAllData() {
+		// Save the latest changes to files
+		updateClients();
+		updateEmployees();
+		updateAdmins();
+
+		// Clear all objects from memory
+		Client::removeAllClients();
+		Employee::removeAllEmployees();
+		Admin::removeAllAdmins();
+	}
+
 };

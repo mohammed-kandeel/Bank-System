@@ -1,35 +1,35 @@
 ﻿#pragma once
 #include "Employee.h"
 
-class FileManager;
-
 class Admin :public Employee {
 public:
-	//Data
-	static map<int, Admin>admin;
+	//All admins Data <ID, *pointer> 
+	static map<int, Admin*>admins;
+	static void removeAllAdmins() {
+		for (auto& i : Admin::admins) {
+			delete i.second;
+		}
+		Admin::admins.clear();
+	}
 	//cons
 	Admin(){}
 	Admin(int id, string name, string password, double salary) : Employee(id, name, password, salary) {}
-	//des
-	~Admin(){}
-
-	void saveNewEmployeeToFile(Employee& employee);  //.ccp
-	void addEmployee(Employee& employee) {
-		Employee::employees.insert({ employee.getID(),employee });
-		saveNewEmployeeToFile(employee);
+	//meths
+	void addEmployee(Employee* employee) {
+		Employee::employees.insert({ employee->getID(),employee });
 		cout << "Employee added successfully.\n";
 		this_thread::sleep_for(chrono::seconds(4));
 	}
 	Employee* searchEmployee(int id) {
-		for (auto& i : Employee::employees) {
-			if (i.first == id)
-				return &i.second;
-		}
+		auto it = Employee::employees.find(id);
+		if (it != Employee::employees.end())
+			return it->second;
 		return nullptr;
+
 	}
 	void listEmployee() {
 		for (auto& i : Employee::employees) {
-			i.second.displayEmployeeInfo();
+			i.second->displayEmployeeInfo();
 			cout << "\n----------------------\n\n";
 		}
 	}
