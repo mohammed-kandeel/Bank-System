@@ -18,7 +18,6 @@ public:
 	void addEmployee(Employee* employee) {
 		Employee::employees.insert({ employee->getID(),employee });
 		cout << "Employee added successfully.\n";
-		this_thread::sleep_for(chrono::seconds(4));
 	}
 	Employee* searchEmployee(int id) {
 		auto it = Employee::employees.find(id);

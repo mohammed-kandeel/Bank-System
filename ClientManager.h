@@ -5,7 +5,7 @@ class ClientManager {
 private:
 	static void showError(string message) {
 		cout << "\n" << message << "\n";
-		this_thread::sleep_for(chrono::seconds(3));
+		this_thread::sleep_for(chrono::seconds(4));
 	}
 	static bool cancelOperation(string temp) {
 		if (temp == "0") {
@@ -305,7 +305,7 @@ private:
 			else {
 				client->deposit(amount, accountType);
 				cout << "\nDeposit completed successfully!\nReturning to main menu...\n";
-				this_thread::sleep_for(chrono::seconds(3));
+				this_thread::sleep_for(chrono::seconds(4));
 				return;
 			}
 		} while (true);
@@ -344,7 +344,7 @@ private:
 			else {
 				client->withdraw(amount, accountType);
 				cout << "\nWithdraw completed successfully!\nReturning to main menu...\n";
-				this_thread::sleep_for(chrono::seconds(3));
+				this_thread::sleep_for(chrono::seconds(4));
 				return;
 			}
 		} while (true);
@@ -430,7 +430,7 @@ public:
 
 		client->setPassword(newPassword);
 		cout << "\nPassword updated successfully!\n";
-		this_thread::sleep_for(chrono::seconds(3));
+		this_thread::sleep_for(chrono::seconds(4));
 	}
 	static void displayMyInformation(Client* client) {
 		system("cls");

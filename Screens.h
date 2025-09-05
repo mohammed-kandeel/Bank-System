@@ -1,9 +1,4 @@
 ﻿#pragma once
-#pragma once
-#include <iostream>
-
-#include <cstdlib>  
-
 #include "ClientManager.h"
 #include "EmployeeManager.h"
 #include "AdminManager.h"
@@ -11,10 +6,42 @@ using namespace std;
 
 class Screens {
 private:
+	static void invalid(int c) {
+		cout << "\nInvalid choice (" << c << "), try again.\n";
+	}
+	static void logout() {
+		cout << "\nYou have been logged out.\n";
+	}
+
 	static void showError(string message) {
 		cout << "\n" << message << "\n";
 		this_thread::sleep_for(chrono::seconds(3));
 	}
+	static int getnum(string line) {
+		string temp;
+		int count;
+		int num;
+
+		count = 0;
+		do {
+			system("cls");
+			cout << line;
+			cout << "->Enter ID : ";
+			getline(cin, temp);
+
+			if (cancelOperation(temp))
+				return-1;
+			if (!tryParseNumber(temp, num)) {
+				count++;
+				if (maxTry(count)) return -1;
+				showError("Invalid input. Please enter a valid number.\n");
+				continue;
+			}
+			else
+				return num;
+		} while (true);
+	}
+
 	static bool maxTry(int count) {
 		if (count == 3) {
 			showError("Too many invalid attempts. Returning to main menu...\n");
@@ -40,50 +67,6 @@ private:
 		}
 		else return false;
 	}
-	static int getnum(string line) {
-		string temp;
-		int count;
-		int num;
-
-		count = 0;
-		do {
-			system("cls");
-			cout << line << endl;
-			cout << "->Enter ID : ";
-			getline(cin, temp);
-
-			if (cancelOperation(temp))
-				return-1;
-			if (!tryParseNumber(temp, num)) {
-				count++;
-				if (maxTry(count)) return -1;
-				showError("Invalid input. Please enter a valid number.\n");
-				continue;
-			}
-			else
-				return num;
-		} while (true);
-	}
-
-	static void loginOptions() {
-		system("cls");
-		cout << "=====   Login as   =====\n\n";
-		cout << "1. Client\n";
-		cout << "2. Employee\n";
-		cout << "3. Admin\n";
-		cout << "0. Close program\n";
-		cout << "\nEnter your choice (0-3): ";
-	}
-
-	static Client* getClient(int id, string password) {
-		return ClientManager::login(id, password);
-	}
-	static Employee* getEmployee(int id, string password) {
-		return EmployeeManager::login(id, password);
-	}
-	static Admin* getadmin(int id, string password) {
-		return AdminManager::login(id, password);
-	}
 
 	static bool clientLogin(int id, string password) {
 		Client* client = getClient(id, password);
@@ -107,15 +90,17 @@ private:
 		}
 	}
 
-
-	static void invalid(int c) {
-		cout << "\nInvalid choice (" << c << "), try again.\n";
+	static Client* getClient(int id, string password) {
+		return ClientManager::login(id, password);
 	}
-	static void logout() {
-		cout << "\nYou have been logged out.\n";
+	static Employee* getEmployee(int id, string password) {
+		return EmployeeManager::login(id, password);
+	}
+	static Admin* getadmin(int id, string password) {
+		return AdminManager::login(id, password);
 	}
 
-	static void welcome(){
+	static void welcome() {
 		cout << "\n\n\n\n\n\n\n\n";
 		cout << "  ##      ## ######## ##        ######   #######  ##     ##   ##########   #######     \n";
 		cout << "  ##  ##  ## ##       ##       ##    ## ##     ## ###   ###       ##      ##     ##    \n";
@@ -140,7 +125,31 @@ private:
 		system("color 0F");
 		system("cls");
 	}
+	static void ThankYou() {
+		system("CLS");
+		system("color 0b");
+		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		cout << "                                        ######## ##     ##    ###    ##    ## ##    ##    ##    ##  #######  ##     ##   \n";
+		cout << "                                           ##    ##     ##   ## ##   ###   ## ##   ##      ##  ##  ##     ## ##     ##   \n";
+		cout << "                                           ##    ##     ##  ##   ##  ####  ## ##  ##        ####   ##     ## ##     ##   \n";
+		cout << "                                           ##    ######### ##     ## ## ## ## #####          ##    ##     ## ##     ##   \n";
+		cout << "                                           ##    ##     ## ######### ##  #### ##  ##         ##    ##     ## ##     ##   \n";
+		cout << "                                           ##    ##     ## ##     ## ##   ### ##   ##        ##    ##     ## ##     ##   \n";
+		cout << "                                           ##    ##     ## ##     ## ##    ## ##    ##       ##     #######   #######    \n";
+		this_thread::sleep_for(chrono::seconds(3));
+		system("color 0F");
+		system("cls");
+	}
 
+	static void loginOptions() {
+		system("cls");
+		cout << "=====   Login as   =====\n\n";
+		cout << "1. Client\n";
+		cout << "2. Employee\n";
+		cout << "3. Admin\n";
+		cout << "0. Close program\n";
+		cout << "\nEnter your choice (0-3): ";
+	}
 	static int loginAs() {
 		string choice;
 		while (true) {
@@ -151,7 +160,7 @@ private:
 				case '1':  return 1; break;
 				case '2':  return 2; break;
 				case '3':  return 3; break;
-				case '0':  return -1; break;
+				case '0':  return 0; break;
 				default:  showError("Wrong input\n"); break;
 			}
 		}
@@ -172,7 +181,7 @@ private:
 
 		system("cls");
 		cout << line;
-		cout << "Id : " << id << endl;
+		cout << "->Id : " << id << endl;
 		cout << "->Enter password : ";
 
 		getline(cin, password);
@@ -182,22 +191,6 @@ private:
 		case 2: if (!employeeLogin(id, password)) return; break;
 		case 3: if (!adminLogin(id, password)) return; break; 
 		}
-	}
-
-	static void ThankYou() {
-		system("CLS");
-		system("color 0b");
-		cout << "\n\n\n\n\n\n\n\n\n\n\n";
-		cout << "######## ##     ##    ###    ##    ## ##    ##    ##    ##  #######  ##     ##   \n";
-		cout << "   ##    ##     ##   ## ##   ###   ## ##   ##      ##  ##  ##     ## ##     ##   \n";
-		cout << "   ##    ##     ##  ##   ##  ####  ## ##  ##        ####   ##     ## ##     ##   \n";
-		cout << "   ##    ######### ##     ## ## ## ## #####          ##    ##     ## ##     ##   \n";
-		cout << "   ##    ##     ## ######### ##  #### ##  ##         ##    ##     ## ##     ##   \n";
-		cout << "   ##    ##     ## ##     ## ##   ### ##   ##        ##    ##     ## ##     ##   \n";
-		cout << "   ##    ##     ## ##     ## ##    ## ##    ##       ##     #######   #######    \n";
-		this_thread::sleep_for(chrono::seconds(3));
-		system("color 0F");
-		system("cls");
 	}
 
 public:

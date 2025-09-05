@@ -54,7 +54,6 @@ public:
 	void addClient(Client* client) {
 		Client::clients.insert({ client->getID(),client });
 		cout << "Client added successfully.\n";
-		this_thread::sleep_for(chrono::seconds(4));
 	}
 
 	void addDebitCard(Client* client, AccountType accountType, int cardId, string expiryDate) {

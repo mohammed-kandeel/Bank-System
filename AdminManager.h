@@ -33,7 +33,7 @@ private:
 
     static void showError(string message) {
         cout << "\n" << message << "\n";
-        this_thread::sleep_for(chrono::seconds(3));
+        this_thread::sleep_for(chrono::seconds(4));
     }
     static void showEmployeeScreen(string header, Employee* employee) {
         system("cls");
@@ -92,7 +92,7 @@ private:
             system("cls");
             cout << line << endl;
 
-            cout << "   ->Enter the employee's salary (or press '0' to cancel): ";
+            cout << "\nEnter the employee's salary (or press '0' to cancel): ";
             getline(cin, temp);
 
             if (cancelOperation(temp)) return -1.0;
@@ -108,6 +108,30 @@ private:
             }
             else
                 return salary;
+        } while (true);
+    }
+    static int getnum(string line) {
+        string temp;
+        int count;
+        int num;
+
+        count = 0;
+        do {
+            system("cls");
+            cout << line;
+            cout << "->Enter ID : ";
+            getline(cin, temp);
+
+            if (cancelOperation(temp))
+                return-1;
+            if (!tryParseNumber(temp, num)) {
+                count++;
+                if (maxTry(count)) return -1;
+                showError("Invalid input. Please enter a valid number.\n");
+                continue;
+            }
+            else
+                return num;
         } while (true);
     }
 
@@ -191,6 +215,8 @@ private:
         Employee* employee = new Employee(id, name, password, salary);
         admin->addEmployee(employee);
         FilesHelper::saveLastId("LastEmployeeId.txt", id);
+        cout << endl;
+        system("pause");
     }
     static void searchForEmployee(Admin* admin) {
         string line = "\n========  Search For Employee  ========\n\n";
@@ -358,7 +384,8 @@ private:
 
         admin->setPassword(newPassword);
         cout << "\nPassword updated successfully!\n";
-        this_thread::sleep_for(chrono::seconds(3));
+        cout << endl;
+        system("pause");
     }
 
 public:
@@ -379,21 +406,22 @@ public:
             system("cls");
             printAdminMenu();
             getline(cin, choice);
+            int i = getnum(choice);
 
-            switch (choice[0]) {
-            case '1': { EmployeeManager::newClient(admin); return true; } break;
-            case '2': { EmployeeManager::newCard(admin); return true; } break;
-            case '3': { EmployeeManager::openUSDAccount(admin); return true; } break;
-            case '4': { EmployeeManager::searchForClient(admin); return true; } break;
-            case '5': { EmployeeManager::listAllClients(admin); return true; } break;
-            case '6': { EmployeeManager::editClientInfo(admin); return true; } break;
-            case '7': { addNewEmployee(admin); return true; } break;
-            case '8': { searchForEmployee(admin); return true; } break;
-            case '9': { editEmployeeInfo(admin); return true; } break;
-            case '10': { listAllEmployees(admin); return true; } break;
-            case '11': { displayMyInformation(admin); return true; } break;
-            case '12': { updateMyPassword(admin); return true; } break;
-            case '0': { return false; } break;
+            switch (i) {
+            case 1: { EmployeeManager::newClient(admin); return true; } break;
+            case 2: { EmployeeManager::newCard(admin); return true; } break;
+            case 3: { EmployeeManager::openUSDAccount(admin); return true; } break;
+            case 4: { EmployeeManager::searchForClient(admin); return true; } break;
+            case 5: { EmployeeManager::listAllClients(admin); return true; } break;
+            case 6: { EmployeeManager::editClientInfo(admin); return true; } break;
+            case 7: { addNewEmployee(admin); return true; } break;
+            case 8: { searchForEmployee(admin); return true; } break;
+            case 9: { editEmployeeInfo(admin); return true; } break;
+            case 10: { listAllEmployees(admin); return true; } break;
+            case 11: { displayMyInformation(admin); return true; } break;
+            case 12: { updateMyPassword(admin); return true; } break;
+            case 0: { return false; } break;
             default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
             }
         }

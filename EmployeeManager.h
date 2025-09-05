@@ -5,7 +5,7 @@ class EmployeeManager{
 private:
 	static void showError(string message) {
 		cout << "\n" << message << "\n";
-		this_thread::sleep_for(chrono::seconds(3));
+		this_thread::sleep_for(chrono::seconds(4));
 	}
 	static bool cancelOperation(string temp) {
 		if (temp == "0") {
@@ -182,7 +182,7 @@ private:
 
 		employee->setPassword(newPassword);
 		cout << "\nPassword updated successfully!\n";
-		this_thread::sleep_for(chrono::seconds(3));
+		this_thread::sleep_for(chrono::seconds(4));
 	}
 
 	public:
@@ -244,6 +244,8 @@ private:
 		Client* client = new Client(id, name, password, EGPbalance, hasUSD, USDbalance);
 		employee->addClient(client);
 		FilesHelper::saveLastId("LastClientId.txt", id);
+		cout << endl;
+		system("pause");
 	}
 	static void newCard(Employee* employee) {
 		double creditLimit = 0;
@@ -363,7 +365,7 @@ private:
 				employee->addCreditCard(client, accountType, lastCardId, "1-2030", creditLimit);
 			FilesHelper::saveCardId(*client);
 			cout << "\nCard issued successfully!\n";
-			this_thread::sleep_for(chrono::seconds(3));
+			this_thread::sleep_for(chrono::seconds(4));
 		}
 	}
 	static void openUSDAccount(Employee* employee) {
