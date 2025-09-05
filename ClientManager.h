@@ -276,7 +276,7 @@ private:
 		}
 	}
 
-	static void Deposit(string line, Client* client, AccountType accountType) {
+	static void getDeposit(string line, Client* client, AccountType accountType) {
 		int count;
 		string temp;
 		double amount;
@@ -310,7 +310,7 @@ private:
 			}
 		} while (true);
 	}
-	static void Withdraw(string line, Client* client, AccountType accountType) {
+	static void getWithdraw(string line, Client* client, AccountType accountType) {
 		int count;
 		string temp;
 		double amount;
@@ -361,7 +361,7 @@ private:
 
 			switch (choice[0]) {
 			case '1': { Deposit(client); return true; } break;
-				//case '2': { withdraw(client); return true; } break;
+				case '2': { withdraw(client); return true; } break;
 				//case '3': { transferTo(client); return true; } break;
 				//case '4': { viewBalance(client); return true; } break;
 				//case '5': { viewTransactionHistory(client); return true; } break;
@@ -403,8 +403,62 @@ public:
 		line += "->Use " + (client->accountTypeToString(accountType)) + " Account\n";
 
 		if (accountType == AccountType::Non) return;
-		Deposit(line, client, accountType);
+		getDeposit(line, client, accountType);
 	}
+
+	static void withdraw(Client* client) {
+		string line;
+		AccountType accountType;
+
+		line = "\n========  Withdraw  ========\n\n";
+		accountType = getAccountType(line, client);
+		line += "->Use " + (client->accountTypeToString(accountType)) + " Account\n";
+
+		if (accountType == AccountType::Non) return;
+		getDeposit(line, client, accountType);
+	}
+
+
+	static void TransferTo(string line, Client* client, AccountType fromAccount, Client* receiver, AccountType toAccount) {
+		int count = 0;
+		string temp;
+		double amount;
+
+		do {
+			system("cls");
+			cout << line << endl;
+			cout << "->Enter amount to transfer (or press '0' to return to main menu): ";
+			getline(cin, temp);
+
+			if (cancelOperation(temp))
+				return;
+			if (!tryParseNumber(temp, amount)) {
+				count++;
+				if (maxTry(count)) return;
+				showError("Invalid input. Please enter a valid number.\n");
+				continue;
+			}
+			if (amount <= 0) {
+				count++;
+				if (maxTry(count)) return;
+				showError("Amount must be greater than zero.\n");
+				continue;
+			}
+			if (client->getBalance(fromAccount) < amount) {
+				showError("Insufficient balance.\nReturning to main menu...\n");
+				return;
+			}
+			else {
+				client->transFerTo(amount, receiver, toAccount);
+
+				cout << "\nTransfer completed successfully!\nReturning to main menu...\n";
+				this_thread::sleep_for(chrono::seconds(4));
+				return;
+			}
+		} while (true);
+	}
+
+
 	static void updateMyPassword(Client* client) {
 		string newPassword, oldPassword;
 		system("cls");
