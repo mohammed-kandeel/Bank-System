@@ -143,6 +143,7 @@
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PaymentMethod.cpp" />
     <ClCompile Include="Person.cpp" />
+    <ClCompile Include="Screens.cpp" />
     <ClCompile Include="Validation.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PaymentMethod.h" />
     <ClInclude Include="Person.h" />
+    <ClInclude Include="Screens.h" />
     <ClInclude Include="Validation.h" />
   </ItemGroup>
   <ItemGroup>

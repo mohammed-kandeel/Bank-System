@@ -109,6 +109,7 @@ private:
 	}
 
 public:
+
 	static string getName(string line, string person) {
 		string name;
 		int count = 0;
@@ -583,10 +584,11 @@ public:
 		cout << "\nPassword updated successfully!\n";
 		this_thread::sleep_for(chrono::seconds(3));
 	}
+
 	static Employee* login(int id, string password) {
 		auto i = Employee::employees.find(id);
 		if (i == Employee::employees.end() || i->second->getPassword() != password) {
-			showError("Wrong ID or password.\nReturning to main menu...\n");
+			showError("Wrong ID or password.\nReturning to main Login menu...\n");
 			return nullptr;
 		}
 		return i->second;

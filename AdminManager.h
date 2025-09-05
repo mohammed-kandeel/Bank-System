@@ -66,13 +66,6 @@ class AdminManager{
 
 
 
-	//cout << "========  Card Menu (Client)  ========\n\n";
-
-	//========  Card Menu (Client)  ========
-	//========  Withdraw  ========
-
-
-
 
 };
 
