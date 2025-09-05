@@ -27,7 +27,7 @@ public:
 		return nullptr;
 
 	}
-	void listEmployee() {
+	void listEmployees() {
 		for (auto& i : Employee::employees) {
 			i.second->displayEmployeeInfo();
 			cout << "\n----------------------\n\n";

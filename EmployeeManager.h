@@ -28,7 +28,7 @@ private:
 		client->displayClientInfo();
 		cout << "-------------------------------\n";
 	}
-	template<class T>
+	template<typename T>
 	static bool tryParseNumber(string& input, T& num) {
 		try {
 			size_t idx;
@@ -108,8 +108,6 @@ private:
 		} while (true);
 	}
 
-public:
-
 	static string getName(string line, string person) {
 		string name;
 		int count = 0;
@@ -117,7 +115,7 @@ public:
 			system("cls");
 			cout << line << endl;
 
-			cout << "\nEnter the "<< person <<"'s name (or press '0' to cancel): ";
+			cout << "\nEnter the " << person << "'s name (or press '0' to cancel): ";
 			getline(cin, name);
 
 			if (cancelOperation(name)) return "";
@@ -152,6 +150,43 @@ public:
 	}
 
 
+	static void displayMyInformation(Employee* employee) {
+		system("cls");
+		cout << "\n======== Display My Info ========\n\n";
+		employee->displayEmployeeInfo();
+		cout << endl;
+		system("pause");
+	}
+	static void updateMyPassword(Employee* employee) {
+		string newPassword, oldPassword;
+		system("cls");
+		cout << "\n======== Update My Password ========\n\n";
+
+		cout << "Enter your current password (or 0 to cancel): ";
+		getline(cin, oldPassword);
+		if (cancelOperation(oldPassword))
+			return;
+		if ((employee->getPassword() != oldPassword)) {
+			showError("\nInvalid password!\nReturning to main menu...\n");
+			return;
+		}
+
+		system("cls");
+		cout << "\n======== Update My Password ========\n\n";
+		cout << "Enter The New Password: ";
+		getline(cin, newPassword);
+		if (!Validation::is_valid_password(newPassword) && newPassword != oldPassword) {
+			showError("Invalid password!\nReturning to main menu...\n");
+			return;
+		}
+
+		employee->setPassword(newPassword);
+		cout << "\nPassword updated successfully!\n";
+		this_thread::sleep_for(chrono::seconds(3));
+	}
+
+	public:
+
 	static void printEmployeeMenu() {
 		system("cls");
 		cout << "=====   Employee Menu   =====\n\n";
@@ -172,7 +207,7 @@ public:
 		bool hasUSD = false;
 		double EGPbalance, USDbalance = 0;
 
-		 line = "\n========  New Client  ========\n\n";
+		line = "\n========  New Client  ========\n\n";
 
 		id = 1 + FilesHelper::getLastId("LastClientId.txt");
 		line += "ID: " + to_string(id);
@@ -217,7 +252,7 @@ public:
 		string temp, line, card;
 		CardType cardType;
 		AccountType accountType;
-		
+
 		line = "\n======== Issue New Card ========\n\n";
 		client = EmployeeManager::getClient(employee, line);
 		if (client == nullptr) return;
@@ -312,11 +347,11 @@ public:
 			showError("Client doesn't have a USD account.\nReturning to main menu...\n");
 			return;
 		}
-		if (cardType==CardType::Debit && client->hasDebitCard(accountType)) {
+		if (cardType == CardType::Debit && client->hasDebitCard(accountType)) {
 			showError("\n" + client->accountTypeToString(accountType) + " account already has a " + (cardType == CardType::Debit ? "debit" : "credit") + " card.\nReturning to main menu...\n");
 			return;
 		}
-		else if(cardType==CardType::Credit && client->hasCreditCard(accountType)) {
+		else if (cardType == CardType::Credit && client->hasCreditCard(accountType)) {
 			showError("\n" + client->accountTypeToString(accountType) + " account already has a " + (cardType == CardType::Debit ? "debit" : "credit") + " card.\nReturning to Main menu...\n");
 			return;
 		}
@@ -324,7 +359,7 @@ public:
 			int lastCardId = FilesHelper::getLastId("LastCardId.txt") + 1;
 			if (cardType == CardType::Debit)
 				employee->addDebitCard(client, accountType, lastCardId, "1-2030");
-			if(cardType==CardType::Credit)
+			if (cardType == CardType::Credit)
 				employee->addCreditCard(client, accountType, lastCardId, "1-2030", creditLimit);
 			FilesHelper::saveCardId(*client);
 			cout << "\nCard issued successfully!\n";
@@ -375,7 +410,7 @@ public:
 				system("pause");
 				return;
 			}
-				
+
 		} while (true);
 	}
 	static void searchForClient(Employee* employee) {
@@ -395,11 +430,11 @@ public:
 		cin >> chois;
 		cin.ignore();
 		system("cls");
-		if (tolower(chois) == 'y'){
+		if (tolower(chois) == 'y') {
 			employee->listClientWithTransactions();
 			system("pause");
 		}
-		else{
+		else {
 			employee->listClient();
 			system("pause");
 		}
@@ -463,7 +498,7 @@ public:
 		}
 		//Password
 		else if (temp == "2") {
-		
+
 			string password;
 			count = 0;
 			do {
@@ -489,7 +524,7 @@ public:
 		}
 		//Balance
 		else if (temp == "3") {
-			
+
 			//Select Account Type
 			AccountType accountType;
 			count = 0;
@@ -550,41 +585,7 @@ public:
 			} while (true);
 		}
 	}
-	static void displayMyInformation(Employee* employee) {
-		system("cls");
-		cout << "\n======== Display My Info ========\n\n";
-		employee->displayEmployeeInfo();
-		cout << endl;
-		system("pause");
-	}
-	static void updateMyPassword(Employee* employee) {
-		string newPassword, oldPassword;
-		system("cls");
-		cout << "\n======== Update My Password ========\n\n";
-
-		cout << "Enter your current password (or 0 to cancel): ";
-		getline(cin, oldPassword);
-		if (cancelOperation(oldPassword))
-			return;
-		if ((employee->getPassword() != oldPassword)) {
-			showError("\nInvalid password!\nReturning to main menu...\n");
-			return;
-		}
-
-		system("cls");
-		cout << "\n======== Update My Password ========\n\n";
-		cout << "Enter The New Password: ";
-		getline(cin, newPassword);
-		if (!Validation::is_valid_password(newPassword)) {
-			showError("Invalid password format!\nReturning to main menu...\n");
-			return;
-		}
-
-		employee->setPassword(newPassword);
-		cout << "\nPassword updated successfully!\n";
-		this_thread::sleep_for(chrono::seconds(3));
-	}
-
+	
 	static Employee* login(int id, string password) {
 		auto i = Employee::employees.find(id);
 		if (i == Employee::employees.end() || i->second->getPassword() != password) {
@@ -598,6 +599,7 @@ public:
 		string choice;
 
 		while (true) {
+			system("cls");
 			printEmployeeMenu();
 			getline(cin, choice);
 

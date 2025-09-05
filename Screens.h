@@ -40,87 +40,6 @@ private:
 		}
 		else return false;
 	}
-
-
-
-
-	static void welcome()
-	{
-		cout << "  ##      ## ######## ##        ######   #######  ##     ##   ##########   #######     \n";
-		cout << "  ##  ##  ## ##       ##       ##    ## ##     ## ###   ###       ##      ##     ##    \n";
-		cout << "  ##  ##  ## ##       ##       ##       ##     ## #### ####       ##      ##     ##     \n";
-		cout << "  ##  ##  ## ######   ##       ##       ##     ## ## ### ##       ##      ##     ##     \n";
-		cout << "  ##  ##  ## ##       ##       ##       ##     ## ##     ##       ##      ##     ##     \n";
-		cout << "  ##  ##  ## ##       ##       ##    ## ##     ## ##     ##       ##      ##     ##     \n";
-		cout << "   ###  ###  ######## ########  ######   #######  ##     ##       ##       #######      \n";
-	}
-	static void ThankYou()
-	{
-		cout << "######## ##     ##    ###    ##    ## ##    ##    ##    ##  #######  ##     ##   \n";
-		cout << "   ##    ##     ##   ## ##   ###   ## ##   ##      ##  ##  ##     ## ##     ##   \n";
-		cout << "   ##    ##     ##  ##   ##  ####  ## ##  ##        ####   ##     ## ##     ##   \n";
-		cout << "   ##    ######### ##     ## ## ## ## #####          ##    ##     ## ##     ##   \n";
-		cout << "   ##    ##     ## ######### ##  #### ##  ##         ##    ##     ## ##     ##   \n";
-		cout << "   ##    ##     ## ##     ## ##   ### ##   ##        ##    ##     ## ##     ##   \n";
-		cout << "   ##    ##     ## ##     ## ##    ## ##    ##       ##     #######   #######    \n";
-
-	}
-
-
-	static void bankName() {
-		cout << "===============================" << endl;
-		cout << " \n\n";
-		cout << "    ######  #### ########     ########     ###    ##    ## ##    ##\n";
-		cout << "   ##    ##  ##  ##     ##    ##     ##   ## ##   ###   ## ##   ##\n";
-		cout << "   ##        ##  ##     ##    ##     ##  ##   ##  ####  ## ##  ##\n";
-		cout << "   ##        ##  ########     ########  ##     ## ## ## ## ##### \n";
-		cout << "   ##        ##  ##     ##    ##     ## ######### ##  #### ##  ##\n";
-		cout << "   ##    ##  ##  ##     ##    ##     ## ##     ## ##   ### ##   ##\n";
-		cout << "    ######  #### ########     ########  ##     ## ##    ## ##    ##\n";
-		cout << " \n\n";
-		cout << "===============================" << endl;
-	}
-	/*static void welcome() {
-		cout << "  ##      ## ######## ##        ######   #######  ##     ##     ##  ###\n";
-		cout << "  ##  ##  ## ##       ##       ##    ## ##     ## ###   ###    ####   ##\n";
-		cout << "  ##  ##  ## ##       ##       ##       ##     ## #### ####     ##     ##\n";
-		cout << "  ##  ##  ## ######   ##       ##       ##     ## ## ### ##            ##\n";
-		cout << "  ##  ##  ## ##       ##       ##       ##     ## ##     ##     ##     ##\n";
-		cout << "  ##  ##  ## ##       ##       ##    ## ##     ## ##     ##    ####   ##\n";
-		cout << "   ###  ###  ######## ########  ######   #######  ##     ##     ##  ###\n";
-	}*/
-
-
-
-public:
-
-	// ===== Main Login Options =====
-	static void loginOptions() {
-		system("cls");
-		cout << "\nLogin as: \n";
-		cout << "1. Client\n";
-		cout << "2. Employee\n";
-		cout << "3. Admin\n";
-		cout << "0. close program\n";
-		cout << "\nEnter your choice (0-3): ";
-	}
-
-	static int loginAs() {
-		string choice;
-		while (true) {
-			loginOptions();
-			getline(cin, choice);
-
-			switch (choice[0]) {
-				case '1': {  return 1; } break;
-				case '2': {  return 2; } break;
-				case '3': {  return 3; } break;
-				case '0': { return -1; } break;
-				default: { showError("Wrong input\n"); return -1; } break;
-			}
-		}
-	}
-
 	static int getnum(string line) {
 		string temp;
 		int count;
@@ -146,51 +65,45 @@ public:
 		} while (true);
 	}
 
+	static void loginOptions() {
+		system("cls");
+		cout << "=====   Login as   =====\n\n";
+		cout << "1. Client\n";
+		cout << "2. Employee\n";
+		cout << "3. Admin\n";
+		cout << "0. Close program\n";
+		cout << "\nEnter your choice (0-3): ";
+	}
 
+	static Client* getClient(int id, string password) {
+		return ClientManager::login(id, password);
+	}
+	static Employee* getEmployee(int id, string password) {
+		return EmployeeManager::login(id, password);
+	}
+	static Admin* getadmin(int id, string password) {
+		return AdminManager::login(id, password);
+	}
 
-
-	static void loginScreen(int c) {
-		int id;
-		string password, line;
-		Client* client;
-		Employee *employee;
-		Admin *admin;
-
-
-		switch (c) {
-			case 1: { line = "=====    Client    =====\n\n"; } break;
-			case 2: { line = "=====   Employee   =====\n\n"; } break;
-			case 3: { line = "=====    Admin     =====\n\n"; } break;
+	static bool clientLogin(int id, string password) {
+		Client* client = getClient(id, password);
+		if (client == nullptr) return false;
+		while (true) {
+			if (!ClientManager::clientOptions(client)) return false;
 		}
-
-		id = getnum(line);
-		if (id == -1)
-			return;
-
-		cout << line;
-		cout << "Id :" << id << endl;
-		cout << "->Enter password : ";
-		getline(cin, password);
-		
-		switch (c) {
-			case 1: { client = ClientManager::login(id, password); } break;
-			case 2: { employee = EmployeeManager::login(id, password); } break;
-			//case 3: { person=AdminManager } break;
+	}
+	static bool employeeLogin(int id, string password) {
+		Employee* employee = getEmployee(id, password);
+		if (employee == nullptr) return false;
+		while (true) {
+			if (!EmployeeManager::employeeOptions(employee)) return false;
 		}
-		if (person == nullptr)
-			return;
-
-		else {
-			while (true) {
-				bool keep = false;
-				switch (c) {
-				case 1: { keep = ClientManager::clientOptions(client); } break;
-				case 2: { keep = EmployeeManager::employeeOptions(employee); } break;
-				case 3: { line = "=====    Admin     =====\n\n"; } break;
-				}
-				if (!keep) break;
-			}
-
+	}
+	static bool adminLogin(int id, string password) {
+		Admin* employee = getadmin(id, password);
+		if (employee == nullptr) return false;
+		while (true) {
+			if (!AdminManager::employeeOptions(employee)) return false;
 		}
 	}
 
@@ -202,178 +115,106 @@ public:
 		cout << "\nYou have been logged out.\n";
 	}
 
-
-
-
-
-
-	// ====== LOGIN SYSTEM ======
-	static Client* clientLogin() {
-		int id; string pass;
-		cout << "Enter Client ID: "; cin >> id;
-		cout << "Enter Password: "; cin >> pass;
-
-		auto it = Client::clients.find(id);
-		if (it != Client::clients.end() && it->second->getPassword() == pass) {
-			return it->second;
-		}
-		cout << "Invalid client credentials.\n";
-		return nullptr;
+	static void welcome(){
+		cout << "\n\n\n\n\n\n\n\n";
+		cout << "  ##      ## ######## ##        ######   #######  ##     ##   ##########   #######     \n";
+		cout << "  ##  ##  ## ##       ##       ##    ## ##     ## ###   ###       ##      ##     ##    \n";
+		cout << "  ##  ##  ## ##       ##       ##       ##     ## #### ####       ##      ##     ##     \n";
+		cout << "  ##  ##  ## ######   ##       ##       ##     ## ## ### ##       ##      ##     ##     \n";
+		cout << "  ##  ##  ## ##       ##       ##       ##     ## ##     ##       ##      ##     ##     \n";
+		cout << "  ##  ##  ## ##       ##       ##    ## ##     ## ##     ##       ##      ##     ##     \n";
+		cout << "   ###  ###  ######## ########  ######   #######  ##     ##       ##       #######      \n";
 	}
-
-	static Employee* employeeLogin() {
-		int id; string pass;
-		cout << "Enter Employee ID: "; cin >> id;
-		cout << "Enter Password: "; cin >> pass;
-
-		auto it = Employee::employees.find(id);
-		if (it != Employee::employees.end() && it->second->getPassword() == pass) {
-			return it->second;
-		}
-		cout << "Invalid employee credentials.\n";
-		return nullptr;
-	}
-
-	static Admin* adminLogin() {
-		int id; string pass;
-		cout << "Enter Admin ID: "; cin >> id;
-		cout << "Enter Password: "; cin >> pass;
-
-		auto it = Admin::admins.find(id);
-		if (it != Admin::admins.end() && it->second->getPassword() == pass) {
-			return it->second;
-		}
-		cout << "Invalid admin credentials.\n";
-		return nullptr;
-	}
-
-
-
-
-
-	// ===== Client Screens =====
-	static void showClientMenu(Client* c) {
+	static void bankName() {
+		//system("CLS");
+		system("color 0b");
+		cout << "\n\n\n";
+		cout << "                                                  ######  #### ########     ########     ###    ##    ## ##    ##\n";
+		cout << "                                                 ##    ##  ##  ##     ##    ##     ##   ## ##   ###   ## ##   ##\n";
+		cout << "                                                 ##        ##  ##     ##    ##     ##  ##   ##  ####  ## ##  ##\n";
+		cout << "                                                 ##        ##  ########     ########  ##     ## ## ## ## ##### \n";
+		cout << "                                                 ##        ##  ##     ##    ##     ## ######### ##  #### ##  ##\n";
+		cout << "                                                 ##    ##  ##  ##     ##    ##     ## ##     ## ##   ### ##   ##\n";
+		cout << "                                                  ######  #### ########     ########  ##     ## ##    ## ##    ##\n";
+		this_thread::sleep_for(chrono::seconds(5));
+		system("color 0F");
 		system("cls");
-		cout << "=== Client Menu ===\n";
-		system("pause");
-		int choice;
-		do {
-			system("cls");
-			cout << "--- Client Menu ---\n";
-			cout << "1. Display Info\n";
-			cout << "2. Check Balance\n";
-			cout << "3. Deposit\n";
-			cout << "4. Withdraw\n";
-			cout << "5. Logout\n";
-			cout << "Choose: ";
-			cin >> choice;
-
-			switch (choice) {
-			case 1: c->displayClientInfo(); break;
-			case 2: cout << "EGP Balance: " << c->getBalance(AccountType::EGP) << endl; break;
-			case 3: {
-				double amount; cout << "Enter deposit amount: "; cin >> amount;
-				c->deposit(amount, AccountType::EGP);
-				break;
-			}
-			case 4: {
-				double amount; cout << "Enter withdraw amount: "; cin >> amount;
-				c->withdraw(amount, AccountType::EGP);
-				break;
-			}
-			case 5: logout(); break;
-			default: invalid(choice); break;
-			}
-			system("pause");
-		} while (choice != 5);
 	}
 
-	// ===== Employee Screens =====
-	static void showEmployeeMenu(Employee* e) {
-		system("cls");
-		cout << "=== Employee Menu ===\n";
-		system("pause");
-		int choice;
-		do {
-			system("cls");
-			cout << "--- Employee Menu ---\n";
-			cout << "1. List Clients\n";
-			cout << "2. Add Client\n";
-			cout << "3. Logout\n";
-			cout << "Choose: ";
-			cin >> choice;
-
-			switch (choice) {
-			case 1: e->listClient(); break;
-			case 2: cout << "(Demo) Add Client\n"; break;
-			case 3: logout(); break;
-			default: invalid(choice); break;
-			}
-			system("pause");
-		} while (choice != 3);
-	}
-
-	// ===== Admin Screens =====
-	static void showAdminMenu(Admin* a) {
-		system("cls");
-		cout << "=== Admin Menu ===\n";
-		system("pause");
-		int choice;
-		do {
-			system("cls");
-			cout << "--- Admin Menu ---\n";
-			cout << "1. List Employees\n";
-			cout << "2. Add Employee\n";
-			cout << "3. Logout\n";
-			cout << "Choose: ";
-			cin >> choice;
-
-			switch (choice) {
-			case 1: a->listEmployee(); break;
-			case 2: cout << "(Demo) Add Employee\n"; break;
-			case 3: logout(); break;
-			default: invalid(choice); break;
-			}
-			system("pause");
-		} while (choice != 3);
-	}
-
-	// ===== Run App =====
-	static void runApp() {
-		bankName();
-		system("pause");
-		system("cls");
-		welcome();
-
-		int option;
-		do {
+	static int loginAs() {
+		string choice;
+		while (true) {
 			loginOptions();
-			cin >> option;
-			if (option == 1) {
-				int role = loginAs();
-				if (role == 1) {
-					Client* c = clientLogin();
-					if (c) showClientMenu(c);
-				}
-				else if (role == 2) {
-					Employee* e = employeeLogin();
-					if (e) showEmployeeMenu(e);
-				}
-				else if (role == 3) {
-					Admin* a = adminLogin();
-					if (a) showAdminMenu(a);
-				}
-				else {
-					invalid(role);
-				}
+			getline(cin, choice);
+
+			switch (choice[0]) {
+				case '1':  return 1; break;
+				case '2':  return 2; break;
+				case '3':  return 3; break;
+				case '0':  return -1; break;
+				default:  showError("Wrong input\n"); break;
 			}
-			else if (option == 2) {
-				cout << "Goodbye!\n";
-			}
-			else {
-				invalid(option);
-			}
-		} while (option != 2);
+		}
+	}
+	static void loginScreen(int c) {
+		int id;
+		string password, line;
+
+		switch (c) {
+		case 1: line = "=====    Client    =====\n\n"; break;
+		case 2: line = "=====   Employee   =====\n\n"; break;
+		case 3: line = "=====    Admin     =====\n\n"; break;
+		default: return;
+		}
+
+		id = getnum(line);
+		if (id == -1) return;
+
+		system("cls");
+		cout << line;
+		cout << "Id : " << id << endl;
+		cout << "->Enter password : ";
+
+		getline(cin, password);
+
+		switch (c) {
+		case 1: if (!clientLogin(id, password)) return; break;
+		case 2: if (!employeeLogin(id, password)) return; break;
+		case 3: if (!adminLogin(id, password)) return; break; 
+		}
+	}
+
+	static void ThankYou() {
+		system("CLS");
+		system("color 0b");
+		cout << "\n\n\n\n\n\n\n\n\n\n\n";
+		cout << "######## ##     ##    ###    ##    ## ##    ##    ##    ##  #######  ##     ##   \n";
+		cout << "   ##    ##     ##   ## ##   ###   ## ##   ##      ##  ##  ##     ## ##     ##   \n";
+		cout << "   ##    ##     ##  ##   ##  ####  ## ##  ##        ####   ##     ## ##     ##   \n";
+		cout << "   ##    ######### ##     ## ## ## ## #####          ##    ##     ## ##     ##   \n";
+		cout << "   ##    ##     ## ######### ##  #### ##  ##         ##    ##     ## ##     ##   \n";
+		cout << "   ##    ##     ## ##     ## ##   ### ##   ##        ##    ##     ## ##     ##   \n";
+		cout << "   ##    ##     ## ##     ## ##    ## ##    ##       ##     #######   #######    \n";
+		this_thread::sleep_for(chrono::seconds(3));
+		system("color 0F");
+		system("cls");
+	}
+
+public:
+	static void runApp() {
+		FileManager::getAllData();
+		welcome();
+		bankName();
+
+		while (true) {
+			int i = loginAs();
+			if (i == 0)
+				break;
+			loginScreen(i);
+		}
+
+		FileManager::updateAllData();
+		ThankYou();
 	}
 };
 

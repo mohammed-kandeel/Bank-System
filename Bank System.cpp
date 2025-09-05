@@ -1,13 +1,18 @@
 #include <iostream>
-#include <string>
-#include "EmployeeManager.h"
+#include "Screens.h"
 #include "FileManager.h"
-#include "ClientManager.h"
-#include "Client.h"
+//#include "ClientManager.h"
+//#include "Client.h"
 using namespace std;
 
 int main(){
-	FileManager::getAllData();
+	Screens::runApp();
+
+	/*Admin* a = new Admin(1, "Mohamed Kandel", "123456789", 10000);
+	Admin::admins.insert({ 1,a });
+	FileManager::addAdmin(*a);*/
+
+	//FileManager::getAllData();
 
 	//Client *c=new Client(1, "mohamed", "12345678", 1500, 1, 1500);
 	//c->setNewCard(AccountType::EGP,CardType::Debit ,1, "1-2030",0);
@@ -47,10 +52,10 @@ int main(){
 
 	//----------------       ClientManager      ----------------------
 
-	Client* c = Client::clients[1];
+	/*Client* c = Client::clients[1];
 	while (true) {
-		if (!ClientManager::clientMenu(c)) break;
-	}
+		if (!ClientManager::clientOptions(c)) break;
+	}*/
 
 
 

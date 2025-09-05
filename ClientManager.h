@@ -42,6 +42,7 @@ private:
 		cout << "4. View Balance\n";
 		cout << "5. View Transaction History\n";
 		cout << "6. Update Password\n";
+		cout << "7. Display My Information\n";
 		cout << "0. Return to Client Menu\n";
 		cout << "\nEnter your choice (0-6): ";
 	}
@@ -364,7 +365,9 @@ private:
 				//case '3': { transferTo(client); return true; } break;
 				//case '4': { viewBalance(client); return true; } break;
 				//case '5': { viewTransactionHistory(client); return true; } break;
-				case '6': { updatePassword(client); return true; } break;
+				case '6': { updateMyPassword(client); return true; } break;
+				case '7': { displayMyInformation(client); return true; } break;
+				case '8': { displayMyTransactions(client); return true; } break;
 				case '0': { return false; } break;
 			default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
 			}
@@ -402,37 +405,47 @@ public:
 		if (accountType == AccountType::Non) return;
 		Deposit(line, client, accountType);
 	}
-	static void updatePassword(Person* person) {
+	static void updateMyPassword(Client* client) {
 		string newPassword, oldPassword;
 		system("cls");
-		cout << "\n======== Change Password ========\n\n";
+		cout << "\n======== Update My Password ========\n\n";
 
-		cout << "Enter your old password (or type 0 to go back): ";
+		cout << "Enter your current password (or 0 to cancel): ";
 		getline(cin, oldPassword);
-
 		if (cancelOperation(oldPassword))
 			return;
-
-		if (person->getPassword() != oldPassword) {
-			showError("\nWrong password! Going back to menu...\n");
+		if ((client->getPassword() != oldPassword)) {
+			showError("\nInvalid password!\nReturning to main menu...\n");
 			return;
 		}
 
 		system("cls");
-		cout << "\n======== Change Password ========\n\n";
-		cout << "Enter your new password: ";
+		cout << "\n======== Update My Password ========\n\n";
+		cout << "Enter The New Password: ";
 		getline(cin, newPassword);
-
-		if (!Validation::is_valid_password(newPassword)) {
-			showError("\nPassword is not good! Going back to menu...\n");
+		if (!Validation::is_valid_password(newPassword) && newPassword != oldPassword) {
+			showError("Invalid password!\nReturning to main menu...\n");
 			return;
 		}
 
-		person->setPassword(newPassword);
-		cout << "\nPassword changed successfully!\n";
+		client->setPassword(newPassword);
+		cout << "\nPassword updated successfully!\n";
 		this_thread::sleep_for(chrono::seconds(3));
 	}
-
+	static void displayMyInformation(Client* client) {
+		system("cls");
+		cout << "\n======== Display My Info ========\n\n";
+		client->displayClientInfo();
+		cout << endl;
+		system("pause");
+	}
+	static void displayMyTransactions(Client* client) {
+		system("cls");
+		cout << "\n======== Display My Transactions History ========\n\n";
+		client->displayClientTransactionHistory();
+		cout << endl;
+		system("pause");
+	}
 
 	static Client* login(int id, string password) {
 		auto i = Client::clients.find(id);
@@ -442,14 +455,19 @@ public:
 		}
 		return i->second;
 	}
-	static bool clientMenu(Client* client) {
+	static bool clientOptions(Client* client) {
 		int count = 0;
 		string choice;
 
 		while (true) {
+			system("cls");
 			printClientMenu();
 			getline(cin, choice);
-			if (choice.empty()) { showError("No input\n"); count++; continue; }
+			if (choice.empty()) { 
+				showError("No input\n");
+				count++;
+				continue; 
+			}
 
 			switch (choice[0]) {
 				case '1': { while (accountMenu(client)); return true; } break;
@@ -459,150 +477,4 @@ public:
 			}
 		}
 	}
-	
-
-
-
-
-
-	static void printClientMenu2() {
-		system("cls");
-		cout << "=====   Client Menu   =====\n\n";
-		cout << "1. Account Information\n";
-		cout << "2. Change Password\n";
-		cout << "3. Deposit Funds\n";
-		cout << "4. Withdraw Funds\n";
-		cout << "5. Transfer Funds\n";
-		cout << "6. Account Balance\n";
-		cout << "7. view Transaction History\n";
-		cout << "0. Logout\n";
-		cout << "\nSelect an option (0-7): ";
-	}
-	static bool clientOptions(Client* client) {
-	int count = 0;
-	string choice;
-
-	while (true) {
-		printClientMenu();
-		getline(cin, choice);
-
-		if (choice == "1") {
-			system("cls");
-			cout << "\n======== Account Information ========\n\n";
-			client->displayClientInfo();
-			cout << endl;
-			system("pause");
-		}
-
-		else if (choice == "2") {
-			updatePassword(client);
-		}
-
-		else if (choice == "3") {
-			system("cls");
-			double amount;
-			int accChoice;
-			cout << "\n======== Deposit ========\n\n";
-			cout << "1. EGP Account\n";
-			cout << "2. USD Account\n";
-			cout << "Choose account type: ";
-			cin >> accChoice; cin.ignore();
-
-			cout << "Enter amount to deposit: ";
-			cin >> amount; cin.ignore();
-
-			if (accChoice == 1) client->deposit(amount, AccountType::EGP);
-			else if (accChoice == 2) client->deposit(amount, AccountType::USD);
-			else showError("Invalid account type!");
-
-			system("pause");
-		}
-
-		else if (choice == "4") {
-			system("cls");
-			double amount;
-			int accChoice;
-			cout << "\n======== Withdraw ========\n\n";
-			cout << "1. EGP Account\n";
-			cout << "2. USD Account\n";
-			cout << "Choose account type: ";
-			cin >> accChoice; cin.ignore();
-
-			cout << "Enter amount to withdraw: ";
-			cin >> amount; cin.ignore();
-
-			if (accChoice == 1) {
-				if (client->checkAvailableBalance(amount, AccountType::EGP))
-					client->withdraw(amount, AccountType::EGP);
-				else showError("Insufficient balance!");
-			}
-			else if (accChoice == 2) {
-				if (client->checkAvailableBalance(amount, AccountType::USD))
-					client->withdraw(amount, AccountType::USD);
-				else showError("Insufficient balance!");
-			}
-			else showError("Invalid account type!");
-
-			system("pause");
-		}
-
-		else if (choice == "5") {
-			system("cls");
-			double amount;
-			int accChoice, recipientId;
-			cout << "\n======== Transfer ========\n\n";
-			cout << "1. EGP Account\n";
-			cout << "2. USD Account\n";
-			cout << "Choose account type: ";
-			cin >> accChoice; cin.ignore();
-
-			cout << "Enter recipient ID: ";
-			cin >> recipientId; cin.ignore();
-
-			cout << "Enter amount to transfer: ";
-			cin >> amount; cin.ignore();
-
-			auto it = Client::clients.find(recipientId);
-			if (it == Client::clients.end()) {
-				showError("Recipient not found!");
-			}
-			else {
-				if (accChoice == 1) client->transFerTo(amount, it->second, AccountType::EGP);
-				else if (accChoice == 2) client->transFerTo(amount, it->second, AccountType::USD);
-				else showError("Invalid account type!");
-			}
-
-			system("pause");
-		}
-
-		else if (choice == "6") {
-			system("cls");
-			cout << "\n======== Account Balance ========\n\n";
-			cout << "EGP Balance: " << client->getBalance(AccountType::EGP) << " EGP\n";
-			if (client->hasUSDAccount())
-				cout << "USD Balance: " << client->getBalance(AccountType::USD) << " USD\n";
-			else
-				cout << "USD Account: Not Available\n";
-			cout << endl;
-			system("pause");
-		}
-
-		else if (choice == "7") {
-			system("cls");
-			client->displayClientTransactionHistory();
-			cout << endl;
-			system("pause");
-		}
-
-		else if (choice == "0") {
-			return false;
-		}
-
-		else {
-			showError("Invalid choice! Please try again.\n");
-			count++;
-			if (maxTry(count)) return false;
-		}
-	}
-}
 };
