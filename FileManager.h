@@ -50,7 +50,7 @@ public:
 
 	//get all data from the files (Clients & Employees & Admins)
 	static void getAllData() {
-		//getAllClients();
+		getAllClients();
 		getAllEmployees();
 		getAllAdmins();
 	}

@@ -280,8 +280,8 @@ public:
 		}
 		if (accountType == AccountType::EGP) {
 			if (amount <= EGP.getBalance()) {
-				withdraw(amount, AccountType::EGP);
-				recipient->deposit(amount, AccountType::EGP);
+				EGP.withDraw(amount);
+				recipient->EGP.deposit(amount);
 				cout << "Transfer successful! " << amount << " EGP has been transferred to " << recipient->name << ".\n";
 				add_transaction("Transferred: " + to_string(amount) + " EGP To " + recipient->name + " (From EGP Account)");
 				recipient->add_transaction("Received: " + to_string(amount) + " EGP From " + this->name + " (To EGP Account)");
@@ -290,8 +290,8 @@ public:
 		}
 		else if (accountType == AccountType::USD && hasUSDAccount() && recipient->hasUSDAccount()) {
 			if (amount <= USD.getBalance()) {
-				withdraw(amount, AccountType::USD);
-				recipient->deposit(amount, AccountType::USD);
+				USD.withDraw(amount);
+				recipient->USD.deposit(amount);
 				cout << "Transfer successful! " << amount << " USD has been transferred to " << recipient->name << ".\n";
 				add_transaction("Transferred: " + to_string(amount) + " USD To " + recipient->name + " (From USD Account)");
 				recipient->add_transaction("Received: " + to_string(amount) + " USD From " + this->name + " (To USD Account)");
@@ -344,47 +344,4 @@ public:
 		}
 		else cout << "Invalid operation.\n";
 	}
-
-	
-
-
-
-
-	// instapay/vodafonecash
-	//void Ewallet(string mobile_number, double amount, string otp, string user_otp)
-	//{
-	//	if (amount > balance)
-	//	{
-	//		cout << "invaild amount \n";
-	//	}
-	//	if (otp != user_otp)
-	//	{
-	//		cout << "wrong otp \n";
-	//	}
-	//	else
-	//	{
-	//		balance -= amount;
-	//		cout << "withdrawal from " << mobile_number << " was successful \n";
-	//	}
-	//}
-	
-
-	//// ?? ???? ?????
-	//void receipt()
-	//{
-	//	char choice;
-	//	cin >> choice;
-	//	cin.ignore();
-	//	cout << "do u want a receipt? (save the environment) ";
-	//	// ?????? ????? ?? ??? ??
-	//	if (choice == 'y')
-	//	{
-	//		cout << "printing receipt... \n";
-	//	}
-	//	else
-	//	{
-	//		cout << "transaction dn without receipt \n";
-	//	}
-	//}
 };
-

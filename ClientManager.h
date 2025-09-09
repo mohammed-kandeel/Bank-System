@@ -22,7 +22,8 @@ private:
 		}
 		return false;
 	}
-	static bool tryParseNumber(string& input, double& num) {
+	template<class T>
+	static bool tryParseNumber(string& input, T& num) {
 		try {
 			size_t idx;
 			num = stod(input, &idx);  // idx = آخر موضع حوِّلته stod
@@ -38,9 +39,11 @@ private:
 		cout << "========  Account Menu (Client)  ========\n\n";
 		cout << "1. Deposit\n";
 		cout << "2. Withdraw\n";
-		cout << "3. Transfer To\n";
+		cout << "3. Transfer To\n\n";
+
 		cout << "4. View Balance\n";
-		cout << "5. View Transaction History\n";
+		cout << "5. View Transaction History\n\n";
+
 		cout << "6. Update Password\n";
 		cout << "7. Display My Information\n";
 		cout << "0. Return to Client Menu\n";
@@ -65,8 +68,8 @@ private:
 	}
 	static void printWhichAccountType() {
 		cout << "----  Select Account Type  -----\n";
-		cout << "1. Use EGP Account \n";
-		cout << "2. Use USD Account \n";
+		cout << "1. EGP Account \n";
+		cout << "2. USD Account \n";
 		cout << "0. Return to Menu\n";
 		cout << "\nEnter your choice (0-2): ";
 	}
@@ -238,7 +241,7 @@ private:
 				showError("Your available credit is insufficient.\nReturning to main menu...\n");
 		}
 	}
-	static void viewBalance(Client* client) {
+	static void cardViewBalance(Client* client) {
 		string line;
 		CardType cardType;
 		AccountType accountType;
@@ -362,9 +365,9 @@ private:
 			switch (choice[0]) {
 			case '1': { Deposit(client); return true; } break;
 				case '2': { withdraw(client); return true; } break;
-				//case '3': { transferTo(client); return true; } break;
-				//case '4': { viewBalance(client); return true; } break;
-				//case '5': { viewTransactionHistory(client); return true; } break;
+				case '3': { transferTo(client); return true; } break;
+				case '4': { ViewBalance(client); return true; } break;
+				case '5': { ViewTransactionHistory(client); return true; } break;
 				case '6': { updateMyPassword(client); return true; } break;
 				case '7': { displayMyInformation(client); return true; } break;
 				case '8': { displayMyTransactions(client); return true; } break;
@@ -385,46 +388,108 @@ private:
 			switch (choice[0]) {
 			case '1': { cardDeposit(client); return true; } break;
 			case '2': { cardWithdraw(client); return true; } break;
-			case '3': { viewBalance(client); return true; } break;
+			case '3': { cardViewBalance(client); return true; } break;
 			case '0': { return false; } break;
 			default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
 			}
 		}
 	}
 
-public:
-	
+	//meths Account Menu
 	static void Deposit(Client* client) {
 		string line;
 		AccountType accountType;
 
 		line = "\n========  Deposit  ========\n\n";
 		accountType = getAccountType(line, client);
+		if (accountType == AccountType::Non) return;
 		line += "->Use " + (client->accountTypeToString(accountType)) + " Account\n";
 
-		if (accountType == AccountType::Non) return;
 		getDeposit(line, client, accountType);
 	}
-
 	static void withdraw(Client* client) {
 		string line;
 		AccountType accountType;
 
 		line = "\n========  Withdraw  ========\n\n";
 		accountType = getAccountType(line, client);
+		if (accountType == AccountType::Non) return;
 		line += "->Use " + (client->accountTypeToString(accountType)) + " Account\n";
 
-		if (accountType == AccountType::Non) return;
-		getDeposit(line, client, accountType);
+		getWithdraw(line, client, accountType);
 	}
 
+	static void transferTo(Client* client) {
+		string line = "\n=======  Transfer To  ======\n\n";
+		Client* receiver;
 
-	static void TransferTo(string line, Client* client, AccountType fromAccount, Client* receiver, AccountType toAccount) {
+		string temp;
+		int id, count;
+
+		count = 0;
+		do {
+			system("cls");
+			cout << line << endl;
+			cout << "->Enter receiver ID (or press '0' to return to main menu): ";
+			getline(cin, temp);
+
+			if (cancelOperation(temp))
+				return;
+			if (!tryParseNumber(temp, id)) {
+				count++;
+				if (maxTry(count)) return;
+				showError("Invalid input. Please enter a valid number.\n");
+				continue;
+			}
+			else {
+				auto i = Client::clients.find(id);
+				if (i == Client::clients.end()) {
+					showError("something goes wrong!\nCan't find receiver account.\nReturning to main menu...\n");
+					return;
+				}
+				receiver = i->second;
+				if (receiver->getID() == client->getID()) {
+					count++;
+					if (maxTry(count)) return;
+					cout << "Cannot transfer to your own account.\n";
+					showError("Cannot transfer to your own account.\nReturning to main menu...\n");
+					return;
+				}
+				else {
+					line += "->Transfer To " + receiver->getName() + "\n";
+					break;
+				}
+			}	
+		} while (true);
+
+	
+		system("cls");
+		cout << line << endl;
+		AccountType accountType = getAccountType(line, client);
+		if (accountType == AccountType::Non) return;
+
+
+		if (!client->hasUSDAccount()) {
+			cout << "\nYou don't have a USD account.\n";
+			system("pause");
+			return;
+		}
+		else if(!receiver->hasUSDAccount()){
+			cout << "\nreceiver doesn't have a USD account.\n";
+			system("pause");
+			return;
+		}
+
+		line += "->Account Type " + (client->accountTypeToString(accountType)) + " Account\n";
+		getTransferTo(line, client, accountType, receiver);
+	}
+	static void getTransferTo(string line, Client* client, AccountType accountType, Client* receiver) {
 		int count = 0;
 		string temp;
 		double amount;
 
 		do {
+			if (maxTry(count)) return;
 			system("cls");
 			cout << line << endl;
 			cout << "->Enter amount to transfer (or press '0' to return to main menu): ";
@@ -440,25 +505,40 @@ public:
 			}
 			if (amount <= 0) {
 				count++;
-				if (maxTry(count)) return;
 				showError("Amount must be greater than zero.\n");
 				continue;
 			}
-			if (client->getBalance(fromAccount) < amount) {
+			if (client->getBalance(accountType) < amount) {
+				count++;
 				showError("Insufficient balance.\nReturning to main menu...\n");
 				return;
 			}
 			else {
-				client->transFerTo(amount, receiver, toAccount);
-
-				cout << "\nTransfer completed successfully!\nReturning to main menu...\n";
-				this_thread::sleep_for(chrono::seconds(4));
+				client->transFerTo(amount, receiver, accountType);
+				cout <<"\n";
+				system("pause");
 				return;
 			}
 		} while (true);
 	}
+	
+	static void ViewBalance(Client* client) {
+		string line = "\n=======  View Balance   ======\n\n";
 
+		AccountType accountType = getAccountType(line, client);
+		if (accountType == AccountType::Non) return;
 
+		system("cls");
+		cout << line;
+		cout << "Current Balance: " << client->getBalance(accountType) << " " << client->getCurrency(accountType) << endl;
+		system("pause");
+	}
+	static void ViewTransactionHistory(Client* client) {
+		system("cls");
+		cout << "\n=======  View Transaction History   ======\n\n";
+		client->displayClientTransactionHistory();
+		system("pause");
+	}
 	static void updateMyPassword(Client* client) {
 		string newPassword, oldPassword;
 		system("cls");
@@ -500,6 +580,8 @@ public:
 		cout << endl;
 		system("pause");
 	}
+
+public:
 
 	static Client* login(int id, string password) {
 		auto i = Client::clients.find(id);

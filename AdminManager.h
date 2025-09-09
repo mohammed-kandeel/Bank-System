@@ -171,12 +171,12 @@ private:
         cout << " 3. Open USD Account for Client\n";
         cout << " 4. Search for Client\n";
         cout << " 5. List All Clients\n";
-        cout << " 6. Edit Client Information\n";
+        cout << " 6. Edit Client Information\n\n";
 
         cout << " 7. Add New Employee\n";
         cout << " 8. Search for Employee\n";
         cout << " 9. Edit Employee Information\n";
-        cout << "10. List All Employees\n";
+        cout << "10. List All Employees\n\n";
 
         cout << "11. Display My Information\n";
         cout << "12. Update My Password\n";
@@ -344,10 +344,6 @@ private:
     static void listAllEmployees(Admin* admin) {
         system("cls");
         cout << "\n========  List All Employees  ========\n\n";
-        cout << "Do you want to display the employee details with history? (y/n): ";
-        char choice;
-        cin >> choice;
-        cin.ignore();
         system("cls");
         admin->listEmployees();
         system("pause");
@@ -368,7 +364,7 @@ private:
         getline(cin, oldPassword);
         if (cancelOperation(oldPassword))
             return;
-        if ((admin->getPassword() != oldPassword)) {
+        if ((admin->getPassword() != oldPassword) && newPassword != oldPassword) {
             showError("\nInvalid password!\nReturning to main menu...\n");
             return;
         }
@@ -399,30 +395,32 @@ public:
         return i->second;
     }
     static bool employeeOptions(Admin* admin) {
-        int count = 0;
+        int i, count = 0;
         string choice;
 
         while (true) {
             system("cls");
             printAdminMenu();
             getline(cin, choice);
-            int i = getnum(choice);
-
+            if (!tryParseNumber(choice, i)) {
+                showError("Invalid input. Please enter a valid number.\n");
+                count++;
+            }
             switch (i) {
-            case 1: { EmployeeManager::newClient(admin); return true; } break;
-            case 2: { EmployeeManager::newCard(admin); return true; } break;
-            case 3: { EmployeeManager::openUSDAccount(admin); return true; } break;
-            case 4: { EmployeeManager::searchForClient(admin); return true; } break;
-            case 5: { EmployeeManager::listAllClients(admin); return true; } break;
-            case 6: { EmployeeManager::editClientInfo(admin); return true; } break;
-            case 7: { addNewEmployee(admin); return true; } break;
-            case 8: { searchForEmployee(admin); return true; } break;
-            case 9: { editEmployeeInfo(admin); return true; } break;
-            case 10: { listAllEmployees(admin); return true; } break;
-            case 11: { displayMyInformation(admin); return true; } break;
-            case 12: { updateMyPassword(admin); return true; } break;
-            case 0: { return false; } break;
-            default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
+                case 1: { EmployeeManager::newClient(admin); return true; } break;
+                case 2: { EmployeeManager::newCard(admin); return true; } break;
+                case 3: { EmployeeManager::openUSDAccount(admin); return true; } break;
+                case 4: { EmployeeManager::searchForClient(admin); return true; } break;
+                case 5: { EmployeeManager::listAllClients(admin); return true; } break;
+                case 6: { EmployeeManager::editClientInfo(admin); return true; } break;
+                case 7: { addNewEmployee(admin); return true; } break;
+                case 8: { searchForEmployee(admin); return true; } break;
+                case 9: { editEmployeeInfo(admin); return true; } break;
+                case 10: { listAllEmployees(admin); return true; } break;
+                case 11: { displayMyInformation(admin); return true; } break;
+                case 12: { updateMyPassword(admin); return true; } break;
+                case 0: { return false; } break;
+                default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
             }
         }
     }

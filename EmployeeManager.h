@@ -195,7 +195,8 @@ private:
 		cout << "3. Open USD Account for Client\n";
 		cout << "4. Search for Client\n";
 		cout << "5. List All Clients\n";
-		cout << "6. Edit Client Information\n";
+		cout << "6. Edit Client Information\n\n";
+
 		cout << "7. Display My Information\n";
 		cout << "8. Update My Password\n";
 		cout << "0. Return to Login Menu\n";
