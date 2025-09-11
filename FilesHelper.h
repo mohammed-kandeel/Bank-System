@@ -27,7 +27,7 @@ public:
 		if (c.hasCreditCard(AccountType::USD) && c.getIdCard(AccountType::USD, CardType::Credit) > bigID)
 			bigID = c.getIdCard(AccountType::USD, CardType::Credit);
 
-		if (bigID > getLastId("LastCardId.text")) {
+		if (bigID > getLastId("LastCardId.txt")) {
 			ofstream saveId("LastCardId.txt", ios::trunc);
 			saveId << bigID;
 			saveId.close();

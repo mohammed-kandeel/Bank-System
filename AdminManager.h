@@ -1,40 +1,10 @@
 ﻿#pragma once
+#include "Validation.h"
 #include"FileManager.h"
 #include "EmployeeManager.h"
 
 class AdminManager {
 private:
-    template<typename T>
-    static bool tryParseNumber(string& input, T& num) {
-        try {
-            size_t idx;
-            num = stod(input, &idx);  // idx = آخر موضع حوِّلته stod
-            // لو في أي حاجة زيادة بعد الرقم، اعتبره خطأ
-            return idx == input.length();
-        }
-        catch (invalid_argument&) { return false; }
-        catch (out_of_range&) { return false; }
-    }
-    static bool maxTry(int count) {
-        if (count == 3) {
-            showError("Too many invalid attempts. Returning to main menu...\n");
-            return true;
-        }
-        else return false;
-    }
-    static bool cancelOperation(string temp) {
-        if (temp == "0") {
-            system("cls");
-            showError("\nOperation cancelled. Returning to main menu...\n");
-            return true;
-        }
-        else return false;
-    }
-
-    static void showError(string message) {
-        cout << "\n" << message << "\n";
-        this_thread::sleep_for(chrono::seconds(4));
-    }
     static void showEmployeeScreen(string header, Employee* employee) {
         system("cls");
         cout << header << "--------  Employee Info  --------\n";
@@ -42,6 +12,33 @@ private:
         cout << "-------------------------------\n";
     }
 
+    static Employee* getEmployee(Admin* admin, string line) {
+        int id, count = 0;
+        Employee* employee;
+        string temp;
+
+        do {
+            system("cls");
+            cout << line;
+            if (Validation::maxTry(count)) return nullptr;
+
+            cout << "Enter employee ID (or press '0' to cancel): ";
+            getline(cin, temp);
+
+            if (Validation::cancelOperation(temp)) return nullptr;
+            if (!Validation::tryParseNumber(temp, id)) {
+                Validation::showError("Invalid input. Please enter a valid number.\n");
+                count++;
+                continue;
+            }
+            employee = admin->searchEmployee(id);
+            if (employee == nullptr) {
+                Validation::showError("No employee found with this ID. Try Again.\n");
+                count++;
+            }
+            else return employee;
+        } while (true);
+    }
     static string getName(string line, string person) {
         string name;
         int count = 0;
@@ -52,12 +49,12 @@ private:
             cout << "\nEnter the " << person << "'s name (or press '0' to cancel): ";
             getline(cin, name);
 
-            if (cancelOperation(name)) return "";
+            if (Validation::cancelOperation(name)) return "";
 
             if (!(Validation::is_valid_name(name))) {
                 count++;
-                if (maxTry(count)) return "";
-                showError("Invalid name, try Again.\n");
+                if (Validation::maxTry(count)) return "";
+                Validation::showError("Invalid name, try Again.\n");
             }
             else return name;
         } while (true);
@@ -72,12 +69,12 @@ private:
             cout << "\nSet a password for the employee (or press '0' to cancel): ";
             getline(cin, password);
 
-            if (cancelOperation(password)) return "";
+            if (Validation::cancelOperation(password)) return "";
 
             if (!Validation::is_valid_password(password)) {
                 count++;
-                if (maxTry(count)) return "";
-                showError("Invalid password, Try Again.\n");
+                if (Validation::maxTry(count)) return "";
+                Validation::showError("Invalid password, Try Again.\n");
             }
             else return password;
         } while (true);
@@ -88,78 +85,26 @@ private:
 
         string temp;
         do {
-            if (maxTry(count)) return -1.0;
+            if (Validation::maxTry(count)) return -1.0;
             system("cls");
             cout << line << endl;
 
             cout << "\nEnter the employee's salary (or press '0' to cancel): ";
             getline(cin, temp);
 
-            if (cancelOperation(temp)) return -1.0;
+            if (Validation::cancelOperation(temp)) return -1.0;
 
-            if (!tryParseNumber(temp, salary)) {
-                showError("Invalid input. Please enter a valid number.\n");
+            if (!Validation::tryParseNumber(temp, salary)) {
+                Validation::showError("Invalid input. Please enter a valid number.\n");
                 count++;
                 continue;
             }
             if (!Validation::is_min_salary(salary)) {
                 count++;
-                showError("Invalid salary, The minimum is 1500. Try Again.\n");
+                Validation::showError("Invalid salary, The minimum is 1500. Try Again.\n");
             }
             else
                 return salary;
-        } while (true);
-    }
-    static int getnum(string line) {
-        string temp;
-        int count;
-        int num;
-
-        count = 0;
-        do {
-            system("cls");
-            cout << line;
-            cout << "->Enter ID : ";
-            getline(cin, temp);
-
-            if (cancelOperation(temp))
-                return-1;
-            if (!tryParseNumber(temp, num)) {
-                count++;
-                if (maxTry(count)) return -1;
-                showError("Invalid input. Please enter a valid number.\n");
-                continue;
-            }
-            else
-                return num;
-        } while (true);
-    }
-
-    static Employee* getEmployee(Admin* admin, string line) {
-        int id, count = 0;
-        Employee* employee;
-        string temp;
-
-        do {
-            system("cls");
-            cout << line;
-            if (maxTry(count)) return nullptr;
-
-            cout << "Enter employee ID (or press '0' to cancel): ";
-            getline(cin, temp);
-
-            if (cancelOperation(temp)) return nullptr;
-            if (!tryParseNumber(temp, id)) {
-                showError("Invalid input. Please enter a valid number.\n");
-                count++;
-                continue;
-            }
-            employee = admin->searchEmployee(id);
-            if (employee == nullptr) {
-                showError("No employee found with this ID. Try Again.\n");
-                count++;
-            }
-            else return employee;
         } while (true);
     }
 
@@ -170,8 +115,8 @@ private:
         cout << " 2. Issuing New Card for Client\n";
         cout << " 3. Open USD Account for Client\n";
         cout << " 4. Search for Client\n";
-        cout << " 5. List All Clients\n";
-        cout << " 6. Edit Client Information\n\n";
+        cout << " 5. Edit Client Information\n";
+        cout << " 6. List All Clients\n\n";
 
         cout << " 7. Add New Employee\n";
         cout << " 8. Search for Employee\n";
@@ -249,11 +194,11 @@ private:
             cout << "\nEnter your choice (0-3): ";
             getline(cin, temp);
 
-            if (cancelOperation(temp)) return;
+            if (Validation::cancelOperation(temp)) return;
             if (temp != "1" && temp != "2" && temp != "3") {
                 count++;
-                if (maxTry(count)) return;
-                showError("\nInvalid choice, Try Again.\n");
+                if (Validation::maxTry(count)) return;
+                Validation::showError("\nInvalid choice, Try Again.\n");
             }
             else break;
         } while (true);
@@ -267,12 +212,12 @@ private:
                 cout << "\nEnter new employee's name (or press '0' to cancel): ";
                 getline(cin, name);
 
-                if (cancelOperation(name)) return;
+                if (Validation::cancelOperation(name)) return;
 
                 if (!(Validation::is_valid_name(name))) {
                     count++;
-                    if (maxTry(count)) return;
-                    showError("\nInvalid name, Try Again.\n");
+                    if (Validation::maxTry(count)) return;
+                    Validation::showError("\nInvalid name, Try Again.\n");
                 }
                 else {
                     admin->editEmployee(employee->getID(), name, "-1", -1);
@@ -294,12 +239,12 @@ private:
                 cout << "\nSet a new password for the employee (or press '0' to cancel): ";
                 getline(cin, password);
 
-                if (cancelOperation(password)) return;
+                if (Validation::cancelOperation(password)) return;
 
                 if (!Validation::is_valid_password(password)) {
                     count++;
-                    if (maxTry(count)) return;
-                    showError("\nInvalid password, Try Again.\n");
+                    if (Validation::maxTry(count)) return;
+                    Validation::showError("\nInvalid password, Try Again.\n");
                 }
                 else {
                     admin->editEmployee(employee->getID(), "-1", password, -1);
@@ -321,15 +266,15 @@ private:
                 cout << "\nEnter new salary for employee (or press '0' to cancel): ";
                 getline(cin, temp);
 
-                if (cancelOperation(temp)) return;
-                if (!tryParseNumber(temp, salary)) {
-                    showError("\nInvalid input. Please enter a valid number.\n");
+                if (Validation::cancelOperation(temp)) return;
+                if (!Validation::tryParseNumber(temp, salary)) {
+                    Validation::showError("\nInvalid input. Please enter a valid number.\n");
                     count++;
                     continue;
                 }
                 if (!Validation::is_min_salary(salary)) {
                     count++;
-                    showError("\nInvalid salary, The minimum is 5000. Try Again.\n");
+                    Validation::showError("\nInvalid salary, The minimum is 5000. Try Again.\n");
                 }
                 else {
                     admin->editEmployee(employee->getID(), "-1", "-1", salary);
@@ -362,10 +307,10 @@ private:
 
         cout << "Enter your current password (or 0 to cancel): ";
         getline(cin, oldPassword);
-        if (cancelOperation(oldPassword))
+        if (Validation::cancelOperation(oldPassword))
             return;
         if ((admin->getPassword() != oldPassword) && newPassword != oldPassword) {
-            showError("\nInvalid password!\nReturning to main menu...\n");
+            Validation::showError("\nInvalid password!\nReturning to main menu...\n");
             return;
         }
 
@@ -374,7 +319,7 @@ private:
         cout << "Enter The New Password: ";
         getline(cin, newPassword);
         if (!Validation::is_valid_password(newPassword) && newPassword != oldPassword) {
-            showError("Invalid password!\nReturning to main menu...\n");
+            Validation::showError("Invalid password!\nReturning to main menu...\n");
             return;
         }
 
@@ -385,11 +330,10 @@ private:
     }
 
 public:
-
     static Admin* login(int id, string password) {
         auto i = Admin::admins.find(id);
         if (i == Admin::admins.end() || i->second->getPassword() != password) {
-            showError("Wrong ID or password.\nReturning to main Login menu...\n");
+            Validation::showError("Wrong ID or password.\nReturning to main Login menu...\n");
             return nullptr;
         }
         return i->second;
@@ -402,8 +346,8 @@ public:
             system("cls");
             printAdminMenu();
             getline(cin, choice);
-            if (!tryParseNumber(choice, i)) {
-                showError("Invalid input. Please enter a valid number.\n");
+            if (!Validation::tryParseNumber(choice, i)) {
+                Validation::showError("Invalid input. Please enter a valid number.\n");
                 count++;
             }
             switch (i) {
@@ -411,8 +355,8 @@ public:
                 case 2: { EmployeeManager::newCard(admin); return true; } break;
                 case 3: { EmployeeManager::openUSDAccount(admin); return true; } break;
                 case 4: { EmployeeManager::searchForClient(admin); return true; } break;
-                case 5: { EmployeeManager::listAllClients(admin); return true; } break;
-                case 6: { EmployeeManager::editClientInfo(admin); return true; } break;
+                case 5: { EmployeeManager::editClientInfo(admin); return true; } break;
+                case 6: { EmployeeManager::listAllClients(admin); return true; } break;
                 case 7: { addNewEmployee(admin); return true; } break;
                 case 8: { searchForEmployee(admin); return true; } break;
                 case 9: { editEmployeeInfo(admin); return true; } break;
@@ -420,7 +364,7 @@ public:
                 case 11: { displayMyInformation(admin); return true; } break;
                 case 12: { updateMyPassword(admin); return true; } break;
                 case 0: { return false; } break;
-                default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
+                default: { Validation::showError("Wrong input\n"); count++; if (Validation::maxTry(count)) return false; } break;
             }
         }
     }

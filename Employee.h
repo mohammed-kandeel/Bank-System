@@ -2,11 +2,6 @@
 #include"Client.h"
 #include <map>
 
-#include <chrono>
-#include <thread>
-
-class FilesHelper;
-
 class Employee :public Person {
 protected:
 	//atts

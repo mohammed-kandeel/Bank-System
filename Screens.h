@@ -13,10 +13,6 @@ private:
 		cout << "\nYou have been logged out.\n";
 	}
 
-	static void showError(string message) {
-		cout << "\n" << message << "\n";
-		this_thread::sleep_for(chrono::seconds(3));
-	}
 	static int getnum(string line) {
 		string temp;
 		int count;
@@ -29,45 +25,18 @@ private:
 			cout << "->Enter ID : ";
 			getline(cin, temp);
 
-			if (cancelOperation(temp))
+			if (Validation::cancelOperation(temp))
 				return-1;
-			if (!tryParseNumber(temp, num)) {
+			if (!Validation::tryParseNumber(temp, num)) {
 				count++;
-				if (maxTry(count)) return -1;
-				showError("Invalid input. Please enter a valid number.\n");
+				if (Validation::maxTry(count)) return -1;
+				Validation::showError("Invalid input. Please enter a valid number.\n");
 				continue;
 			}
 			else
 				return num;
 		} while (true);
 	}
-
-	static bool maxTry(int count) {
-		if (count == 3) {
-			showError("Too many invalid attempts. Returning to main menu...\n");
-			return true;
-		}
-		else return false;
-	}
-	static bool tryParseNumber(string& input, int& num) {
-		try {
-			size_t idx;
-			num = stod(input, &idx);  // idx = آخر موضع حوِّلته stod
-			// لو في أي حاجة زيادة بعد الرقم، اعتبره خطأ
-			return idx == input.length();
-		}
-		catch (invalid_argument&) { return false; }
-		catch (out_of_range&) { return false; }
-	}
-	static bool cancelOperation(string temp) {
-		if (temp == "0") {
-			system("cls");
-			showError("\nOperation cancelled. Returning to main menu...\n");
-			return true;
-		}
-		else return false;
-	}
-
 	static bool clientLogin(int id, string password) {
 		Client* client = getClient(id, password);
 		if (client == nullptr) return false;
@@ -161,7 +130,7 @@ private:
 				case '2':  return 2; break;
 				case '3':  return 3; break;
 				case '0':  return 0; break;
-				default:  showError("Wrong input\n"); break;
+				default:  Validation::showError("Wrong input\n"); break;
 			}
 		}
 	}
@@ -170,10 +139,10 @@ private:
 		string password, line;
 
 		switch (c) {
-		case 1: line = "=====    Client    =====\n\n"; break;
-		case 2: line = "=====   Employee   =====\n\n"; break;
-		case 3: line = "=====    Admin     =====\n\n"; break;
-		default: return;
+			case 1: line = "=====    Client    =====\n\n"; break;
+			case 2: line = "=====   Employee   =====\n\n"; break;
+			case 3: line = "=====    Admin     =====\n\n"; break;
+			default: return;
 		}
 
 		id = getnum(line);
@@ -187,9 +156,9 @@ private:
 		getline(cin, password);
 
 		switch (c) {
-		case 1: if (!clientLogin(id, password)) return; break;
-		case 2: if (!employeeLogin(id, password)) return; break;
-		case 3: if (!adminLogin(id, password)) return; break; 
+			case 1: if (!clientLogin(id, password)) return; break;
+			case 2: if (!employeeLogin(id, password)) return; break;
+			case 3: if (!adminLogin(id, password)) return; break; 
 		}
 	}
 

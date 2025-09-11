@@ -1,85 +1,16 @@
 ﻿#pragma once
+#include "Validation.h"
 #include"FileManager.h"
 
 class EmployeeManager{
 private:
-	static void showError(string message) {
-		cout << "\n" << message << "\n";
-		this_thread::sleep_for(chrono::seconds(4));
-	}
-	static bool cancelOperation(string temp) {
-		if (temp == "0") {
-			system("cls");
-			showError("\nOperation cancelled. Returning to main menu...\n");
-			return true;
-		}
-		else return false;
-	}
-	static bool maxTry(int count) {
-		if (count == 3) {
-			showError("Too many invalid attempts. Returning to main menu...\n");
-			return true;
-		}
-		else return false;
-	}
 	static void showClientScreen(string header, Client* client) {
 		system("cls");
 		cout << header << "--------  Client Info  --------\n";
 		client->displayClientInfo();
 		cout << "-------------------------------\n";
 	}
-	template<typename T>
-	static bool tryParseNumber(string& input, T& num) {
-		try {
-			size_t idx;
-			num = stod(input, &idx);  // idx = آخر موضع حوِّلته stod
-			// لو في أي حاجة زيادة بعد الرقم، اعتبره خطأ
-			return idx == input.length();
-		}
-		catch (invalid_argument&) { return false; }
-		catch (out_of_range&) { return false; }
-	}
-	
-	static bool askForUSD() {
-		string temp;
-		cout << "Would you like to add a USD account for the client? (y/n): ";
-		getline(cin, temp);
-		return (!(temp.empty()) && (tolower(temp[0]) == 'y'));
-	}
-	static double getBalance(string line, string accountType) {
-		double balance;
-		int count = 0;
 
-		string temp;
-		do {
-			if (maxTry(count)) return -1.0;
-			system("cls");
-			cout << line << endl;
-
-			cout << endl << accountType << " Account:\n";
-			cout << "   ->Enter the client's balance (or press '0' to cancel): ";
-			getline(cin, temp);
-
-			if (accountType == "EGP" && cancelOperation(temp)) return -1.0;
-			else if (accountType == "USD" && temp == "0") {
-				cout << "Continue without creating a USD account.\n";
-				this_thread::sleep_for(chrono::seconds(3));
-				return -1.0;
-			}
-
-			if (!tryParseNumber(temp, balance)) {
-				showError("Invalid input. Please enter a valid number.\n");
-				count++;
-				continue;
-			}
-			if (!Validation::is_min_balance(balance)) {
-				count++;
-				showError("Invalid balance, The minimum is 1500. Try Again.\n");
-			}
-			else
-				return balance;
-		} while (true);
-	}
 	static Client* getClient(Employee* employee, string line) {
 		int id, count = 0;
 		Client* client;
@@ -88,26 +19,25 @@ private:
 		do {
 			system("cls");
 			cout << line;
-			if (maxTry(count)) return nullptr;
-			
+			if (Validation::maxTry(count)) return nullptr;
+
 			cout << "Enter client ID (or press '0' to cancel): ";
 			getline(cin, temp);
 
-			if (cancelOperation(temp)) return nullptr;
-			if (!tryParseNumber(temp, id)) {
-				showError("Invalid input. Please enter a valid number.\n");
+			if (Validation::cancelOperation(temp)) return nullptr;
+			if (!Validation::tryParseNumber(temp, id)) {
+				Validation::showError("Invalid input. Please enter a valid number.\n");
 				count++;
 				continue;
 			}
 			client = employee->searchClient(id);
 			if (client == nullptr) {
-				showError("No client found with this ID. Try Again.\n");
+				Validation::showError("No client found with this ID. Try Again.\n");
 				count++;
 			}
 			else return client;
 		} while (true);
 	}
-
 	static string getName(string line, string person) {
 		string name;
 		int count = 0;
@@ -118,12 +48,12 @@ private:
 			cout << "\nEnter the " << person << "'s name (or press '0' to cancel): ";
 			getline(cin, name);
 
-			if (cancelOperation(name)) return "";
+			if (Validation::cancelOperation(name)) return "";
 
 			if (!(Validation::is_valid_name(name))) {
 				count++;
-				if (maxTry(count)) return "";
-				showError("Invalid name, try Again.\n");
+				if (Validation::maxTry(count)) return "";
+				Validation::showError("Invalid name, try Again.\n");
 			}
 			else return name;
 		} while (true);
@@ -138,17 +68,72 @@ private:
 			cout << "\nSet a password for the client (or press '0' to cancel): ";
 			getline(cin, password);
 
-			if (cancelOperation(password)) return "";
+			if (Validation::cancelOperation(password)) return "";
 
 			if (!Validation::is_valid_password(password)) {
 				count++;
-				if (maxTry(count)) return "";
-				showError("Invalid password, Try Again.\n");
+				if (Validation::maxTry(count)) return "";
+				Validation::showError("Invalid password, Try Again.\n");
 			}
 			else return password;
 		} while (true);
 	}
+	static double getBalance(string line, string accountType) {
+		double balance;
+		int count = 0;
 
+		string temp;
+		do {
+			if (Validation::maxTry(count)) return -1.0;
+			system("cls");
+			cout << line << endl;
+
+			cout << endl << accountType << " Account:\n";
+			cout << "   ->Enter the client's balance (or press '0' to cancel): ";
+			getline(cin, temp);
+
+			if (accountType == "EGP" && Validation::cancelOperation(temp)) return -1.0;
+			else if (accountType == "USD" && temp == "0") {
+				cout << "Continue without creating a USD account.\n";
+				this_thread::sleep_for(chrono::seconds(3));
+				return -1.0;
+			}
+
+			if (!Validation::tryParseNumber(temp, balance)) {
+				Validation::showError("Invalid input. Please enter a valid number.\n");
+				count++;
+				continue;
+			}
+			if (!Validation::is_min_balance(balance)) {
+				count++;
+				Validation::showError("Invalid balance, The minimum is 1500. Try Again.\n");
+			}
+			else
+				return balance;
+		} while (true);
+	}
+	static bool askForUSD() {
+		string temp;
+		cout << "Would you like to add a USD account for the client? (y/n): ";
+		getline(cin, temp);
+		return (!(temp.empty()) && (tolower(temp[0]) == 'y'));
+	}
+
+	static void printEmployeeMenu() {
+		system("cls");
+		cout << "=====   Employee Menu   =====\n\n";
+		cout << "1. Add New Client\n";
+		cout << "2. Issuing New Card for Client\n";
+		cout << "3. Open USD Account for Client\n";
+		cout << "4. Search for Client\n";
+		cout << "5. Edit Client Information\n";
+		cout << "6. List All Clients\n\n";
+
+		cout << "7. Display My Information\n";
+		cout << "8. Update My Password\n";
+		cout << "0. Return to Login Menu\n";
+		cout << "\nEnter your choice (0-8): ";
+	}
 
 	static void displayMyInformation(Employee* employee) {
 		system("cls");
@@ -164,10 +149,10 @@ private:
 
 		cout << "Enter your current password (or 0 to cancel): ";
 		getline(cin, oldPassword);
-		if (cancelOperation(oldPassword))
+		if (Validation::cancelOperation(oldPassword))
 			return;
 		if ((employee->getPassword() != oldPassword)) {
-			showError("\nInvalid password!\nReturning to main menu...\n");
+			Validation::showError("\nInvalid password!\nReturning to main menu...\n");
 			return;
 		}
 
@@ -176,7 +161,7 @@ private:
 		cout << "Enter The New Password: ";
 		getline(cin, newPassword);
 		if (!Validation::is_valid_password(newPassword) && newPassword != oldPassword) {
-			showError("Invalid password!\nReturning to main menu...\n");
+			Validation::showError("Invalid password!\nReturning to main menu...\n");
 			return;
 		}
 
@@ -185,23 +170,7 @@ private:
 		this_thread::sleep_for(chrono::seconds(4));
 	}
 
-	public:
-
-	static void printEmployeeMenu() {
-		system("cls");
-		cout << "=====   Employee Menu   =====\n\n";
-		cout << "1. Add New Client\n";
-		cout << "2. Issuing New Card for Client\n";
-		cout << "3. Open USD Account for Client\n";
-		cout << "4. Search for Client\n";
-		cout << "5. List All Clients\n";
-		cout << "6. Edit Client Information\n\n";
-
-		cout << "7. Display My Information\n";
-		cout << "8. Update My Password\n";
-		cout << "0. Return to Login Menu\n";
-		cout << "\nEnter your choice (0-8): ";
-	}
+public:
 	static void newClient(Employee* employee) {
 		int id, count = 0;
 		string name, password, line, temp;
@@ -270,7 +239,7 @@ private:
 			cout << "\nEnter your choice (0-2): ";
 			getline(cin, temp);
 
-			if (cancelOperation(temp))
+			if (Validation::cancelOperation(temp))
 				return;
 			if (temp == "1") {
 				cardType = CardType::Debit;
@@ -284,8 +253,8 @@ private:
 			}
 			else {
 				count++;
-				if (maxTry(count)) return;
-				showError("Invalid choice, Try Again.\n");
+				if (Validation::maxTry(count)) return;
+				Validation::showError("Invalid choice, Try Again.\n");
 			}
 		} while (true);
 
@@ -299,17 +268,17 @@ private:
 				cout << "Enter Credit Limit: ";
 				getline(cin, temp);
 
-				if (!tryParseNumber(temp, creditLimit)) {
-					showError("Invalid input. Please enter a valid number.\n");
+				if (!Validation::tryParseNumber(temp, creditLimit)) {
+					Validation::showError("Invalid input. Please enter a valid number.\n");
 					count++;
 					continue;
 				}
 				if (creditLimit <= 0) {
 					count++;
-					showError("Credit limit must be positive.\n");
+					Validation::showError("Credit limit must be positive.\n");
 					continue;
 				}
-				if (maxTry(count)) return;
+				if (Validation::maxTry(count)) return;
 				if (creditLimit > 0) {
 					card += "\nCredit Limit: " + to_string(creditLimit) + "\n";
 					break;
@@ -330,7 +299,7 @@ private:
 			cout << "\nEnter your choice (0-2): ";
 			getline(cin, temp);
 
-			if (cancelOperation(temp)) return;
+			if (Validation::cancelOperation(temp)) return;
 			if (temp == "1") {
 				accountType = AccountType::EGP;
 				break;
@@ -341,21 +310,21 @@ private:
 			}
 			else {
 				count++;
-				if (maxTry(count)) return;
-				showError("Invalid choice, Try Again.\n");
+				if (Validation::maxTry(count)) return;
+				Validation::showError("Invalid choice, Try Again.\n");
 			}
 		} while (true);
 
 		if (accountType == AccountType::USD && !client->hasUSDAccount()) {
-			showError("Client doesn't have a USD account.\nReturning to main menu...\n");
+			Validation::showError("Client doesn't have a USD account.\nReturning to main menu...\n");
 			return;
 		}
 		if (cardType == CardType::Debit && client->hasDebitCard(accountType)) {
-			showError("\n" + client->accountTypeToString(accountType) + " account already has a " + (cardType == CardType::Debit ? "debit" : "credit") + " card.\nReturning to main menu...\n");
+			Validation::showError("\n" + client->accountTypeToString(accountType) + " account already has a " + (cardType == CardType::Debit ? "debit" : "credit") + " card.\nReturning to main menu...\n");
 			return;
 		}
 		else if (cardType == CardType::Credit && client->hasCreditCard(accountType)) {
-			showError("\n" + client->accountTypeToString(accountType) + " account already has a " + (cardType == CardType::Debit ? "debit" : "credit") + " card.\nReturning to Main menu...\n");
+			Validation::showError("\n" + client->accountTypeToString(accountType) + " account already has a " + (cardType == CardType::Debit ? "debit" : "credit") + " card.\nReturning to Main menu...\n");
 			return;
 		}
 		else {
@@ -380,13 +349,13 @@ private:
 			return;
 
 		if (client->hasUSDAccount()) {
-			showError("The client already has a USD account.\nReturning to main menu...\n");
+			Validation::showError("The client already has a USD account.\nReturning to main menu...\n");
 			return;
 		}
 		int count = 0;
 		string temp;
 		do {
-			if (maxTry(count)) return;
+			if (Validation::maxTry(count)) return;
 
 			showClientScreen(line, client);
 			cout << endl << "USD Account:\n";
@@ -398,14 +367,14 @@ private:
 				this_thread::sleep_for(chrono::seconds(3));
 				return;
 			}
-			if (!tryParseNumber(temp, USDbalance)) {
-				showError("\nInvalid input. Please enter a valid number.\n");
+			if (!Validation::tryParseNumber(temp, USDbalance)) {
+				Validation::showError("\nInvalid input. Please enter a valid number.\n");
 				count++;
 				continue;
 			}
 			if (!Validation::is_min_balance(USDbalance)) {
 				count++;
-				showError("\nInvalid balance, The minimum is 1500. Try Again.\n");
+				Validation::showError("\nInvalid balance, The minimum is 1500. Try Again.\n");
 			}
 			else {
 				employee->addUSDAccount(client, USDbalance);
@@ -465,11 +434,11 @@ private:
 			cout << "\nEnter your choice (0-3): ";
 			getline(cin, temp);
 
-			if (cancelOperation(temp)) return;
+			if (Validation::cancelOperation(temp)) return;
 			if (temp != "1" && temp != "2" && temp != "3") {
 				count++;
-				if (maxTry(count)) return;
-				showError("\nInvalid choice, Try Again.\n");
+				if (Validation::maxTry(count)) return;
+				Validation::showError("\nInvalid choice, Try Again.\n");
 			}
 			else break;
 		} while (true);
@@ -483,12 +452,12 @@ private:
 				cout << "\nEnter new client's name (or press '0' to cancel): ";
 				getline(cin, name);
 
-				if (cancelOperation(name)) return;
+				if (Validation::cancelOperation(name)) return;
 
 				if (!(Validation::is_valid_name(name))) {
 					count++;
-					if (maxTry(count)) return;
-					showError("\nInvalid choice, Try Again.\n");
+					if (Validation::maxTry(count)) return;
+					Validation::showError("\nInvalid choice, Try Again.\n");
 				}
 				else {
 					employee->editClient(client->getID(), name, "-1", -1, AccountType::EGP);  // '-1' not editing
@@ -509,12 +478,12 @@ private:
 				cout << "\nSet a new password for the client (or press '0' to cancel): ";
 				getline(cin, password);
 
-				if (cancelOperation(password)) return;
+				if (Validation::cancelOperation(password)) return;
 
 				if (!Validation::is_valid_password(password)) {
 					count++;
-					if (maxTry(count)) return;
-					showError("\nInvalid choice, Try Again.\n");
+					if (Validation::maxTry(count)) return;
+					Validation::showError("\nInvalid choice, Try Again.\n");
 				}
 				else {
 					employee->editClient(client->getID(), "-1", password, -1, AccountType::EGP);  // '-1' not editing
@@ -540,8 +509,7 @@ private:
 				cout << "\nEnter your choice (0-2): ";
 				getline(cin, temp);
 
-				if (cancelOperation(temp))
-					return;
+				if (Validation::cancelOperation(temp)) return;
 
 				if (temp == "1") {
 					accountType = AccountType::EGP;
@@ -553,30 +521,30 @@ private:
 				}
 				else {
 					count++;
-					if (maxTry(count)) return;
-					showError("\nInvalid choice, Try Again.\n");
+					if (Validation::maxTry(count)) return;
+					Validation::showError("\nInvalid choice, Try Again.\n");
 				}
 			} while (true);
 
 			double balance;
 			count = 0;
 			do {
-				if (maxTry(count)) return;
+				if (Validation::maxTry(count)) return;
 
 				showClientScreen(line, client);
 				cout << endl << ((accountType == AccountType::EGP) ? "EGP" : "USD") << " Account:\n";
 				cout << "   ->Enter new client's balance (or press '0' to cancel): ";
 				getline(cin, temp);
 
-				if (cancelOperation(temp)) return;
-				if (!tryParseNumber(temp, balance)) {
-					showError("\nInvalid input. Please enter a valid number.\n");
+				if (Validation::cancelOperation(temp)) return;
+				if (!Validation::tryParseNumber(temp, balance)) {
+					Validation::showError("\nInvalid input. Please enter a valid number.\n");
 					count++;
 					continue;
 				}
 				if (!Validation::is_min_balance(balance)) {
 					count++;
-					showError("\nInvalid balance, The minimum is 1500. Try Again.\n");
+					Validation::showError("\nInvalid balance, The minimum is 1500. Try Again.\n");
 				}
 				else {
 					employee->editClient(client->getID(), "-1", "-1", balance, accountType);  // '-1' not editing
@@ -588,11 +556,11 @@ private:
 			} while (true);
 		}
 	}
-	
+
 	static Employee* login(int id, string password) {
 		auto i = Employee::employees.find(id);
 		if (i == Employee::employees.end() || i->second->getPassword() != password) {
-			showError("Wrong ID or password.\nReturning to main Login menu...\n");
+			Validation::showError("Wrong ID or password.\nReturning to main Login menu...\n");
 			return nullptr;
 		}
 		return i->second;
@@ -607,16 +575,16 @@ private:
 			getline(cin, choice);
 
 			switch (choice[0]) {
-				case '1': { newClient(employee); return true; } break;
-				case '2': { newCard(employee); return true; } break;
-				case '3': { openUSDAccount(employee); return true; } break;
-				case '4': { searchForClient(employee); return true; } break;
-				case '5': { listAllClients(employee); return true; } break;
-				case '6': { editClientInfo(employee); return true; } break;
-				case '7': { displayMyInformation(employee); return true; } break;
-				case '8': { updateMyPassword(employee); return true; } break;
-				case '0': { return false; } break;
-				default: { showError("Wrong input\n"); count++; if (maxTry(count)) return false; } break;
+			case '1': { newClient(employee); return true; } break;
+			case '2': { newCard(employee); return true; } break;
+			case '3': { openUSDAccount(employee); return true; } break;
+			case '4': { searchForClient(employee); return true; } break;
+			case '5': { editClientInfo(employee); return true; } break;
+			case '6': { listAllClients(employee); return true; } break;
+			case '7': { displayMyInformation(employee); return true; } break;
+			case '8': { updateMyPassword(employee); return true; } break;
+			case '0': { return false; } break;
+			default: { Validation::showError("Wrong input\n"); count++; if (Validation::maxTry(count)) return false; } break;
 			}
 		}
 	}
