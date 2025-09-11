@@ -52,7 +52,7 @@ private:
 		cout << "\nEnter your choice (0-2): ";
 	}
 
-	static bool accountMenu(Client* client) {
+	static bool accountOperations(Client* client) {
 		int count = 0;
 		string choice;
 
@@ -574,7 +574,7 @@ public:
 			}
 
 			switch (choice[0]) {
-				case '1': { while (accountMenu(client)); return true; } break;
+				case '1': { while (accountOperations(client)); return true; } break;
 				case '2': { while (cardOperations(client)); return true; } break;
 				case '0': { return false; } break;
 				default: { Validation::showError("Wrong input\n"); count++; if (Validation::maxTry(count)) return false; } break;

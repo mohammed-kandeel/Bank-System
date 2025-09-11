@@ -30,7 +30,7 @@ public:
 
 	static void showError(string message) {
 		cout << "\n" << message << "\n";
-		this_thread::sleep_for(chrono::seconds(4));
+		this_thread::sleep_for(chrono::seconds(3));
 	}
 	static bool cancelOperation(string temp) {
 		if (temp == "0") {
